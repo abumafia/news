@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Admin — NEWS.ULTRA</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    .glass { background: rgba(0,0,0,.35); backdrop-filter: blur(14px); }
+    .card { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); }
+    .chip { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.10); }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100">
+
+<header class="sticky top-0 z-50 border-b border-white/10 glass">
+  <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+    <a href="/" class="font-extrabold text-xl tracking-tight">NEWS<span class="text-sky-400">.ULTRA</span> <span class="text-xs text-slate-400">ADMIN</span></a>
+    <nav class="flex items-center gap-2 text-sm text-slate-300">
+      <a class="px-3 py-2 rounded-xl hover:bg-white/5" href="/"><i class="bi bi-house"></i> Home</a>
+      <a class="px-3 py-2 rounded-xl hover:bg-white/5" href="/editor.html"><i class="bi bi-pencil-square"></i> Editor</a>
+      <button id="logoutBtn" class="hidden px-3 py-2 rounded-xl hover:bg-white/5"><i class="bi bi-box-arrow-right"></i> Logout</button>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-8">
+  <!-- Login -->
+  <section id="loginBox" class="card rounded-3xl p-6 max-w-xl">
+    <h1 class="text-2xl font-black">Admin login</h1>
+    <p class="text-slate-400 text-sm mt-2">Login with an admin account created via /api/setup-admin or Admin user creation.</p>
+
+    <div class="mt-5 space-y-3">
+      <input id="u" class="w-full rounded-2xl bg-white/5 border border-white/10 px-3 py-2" placeholder="username"/>
+      <input id="p" type="password" class="w-full rounded-2xl bg-white/5 border border-white/10 px-3 py-2" placeholder="password"/>
+      <button id="loginBtn" class="w-full px-5 py-3 rounded-2xl bg-sky-500/20 border border-sky-400/30 hover:bg-sky-500/30">
+        Login
+      </button>
+      <div id="loginMsg" class="text-xs text-slate-400"></div>
+    </div>
+
+    <div class="mt-6 text-xs text-slate-400">
+      <div class="chip inline-flex items-center gap-2 px-3 py-2 rounded-2xl">
+        <i class="bi bi-info-circle"></i>
+        Setup admin (one-time): <span class="text-slate-200">POST /api/setup-admin</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dashboard -->
+  <section id="dash" class="hidden space-y-6">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <h2 class="text-3xl font-black">Dashboard</h2>
+        <p class="text-slate-400 text-sm">KPIs, charts, authors, and article operations.</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="refreshBtn" class="px-4 py-2 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10">Refresh</button>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="grid sm:grid-cols-2 lg:grid-cols-6 gap-4">
+      <div class="card rounded-3xl p-5"><div class="text-xs text-slate-400">Total articles</div><div id="k1" class="text-2xl font-black mt-1">—</div></div>
+      <div class="card rounded-3xl p-5"><div class="text-xs text-slate-400">Published</div><div id="k2" class="text-2xl font-black mt-1">—</div></div>
+      <div class="card rounded-3xl p-5"><div class="text-xs text-slate-400">Authors</div><div id="k3" class="text-2xl font-black mt-1">—</div></div>
+      <div class="card rounded-3xl p-5"><div class="text-xs text-slate-400">Total views</div><div id="k4" class="text-2xl font-black mt-1">—</div></div>
+      <div class="card rounded-3xl p-5"><div class="text-xs text-slate-400">Total likes</div><div id="k5" class="text-2xl font-black mt-1">—</div></div>
+      <div class="card rounded-3xl p-5"><div class="text-xs text-slate-400">Total comments</div><div id="k6" class="text-2xl font-black mt-1">—</div></div>
+    </div>
+
+    <!-- Chart -->
+    <div class="card rounded-3xl p-6">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h3 class="font-extrabold text-lg">Last 14 days activity</h3>
+        <div class="text-xs text-slate-400">Views / Likes / Comments</div>
+      </div>
+      <div class="mt-4">
+        <canvas id="chart" height="90"></canvas>
+      </div>
+    </div>
+
+    <!-- Authors management -->
+    <div class="grid lg:grid-cols-12 gap-6">
+      <div class="lg:col-span-5 card rounded-3xl p-6">
+        <h3 class="font-extrabold text-lg">Create author/editor</h3>
+        <p class="text-slate-400 text-sm mt-1">Creates login credentials for editor.html and profile page later.</p>
+
+        <div class="mt-4 space-y-3">
+          <input id="au" class="w-full rounded-2xl bg-white/5 border border-white/10 px-3 py-2" placeholder="username"/>
+          <input id="ap" type="password" class="w-full rounded-2xl bg-white/5 border border-white/10 px-3 py-2" placeholder="password"/>
+          <div class="grid grid-cols-2 gap-3">
+            <input id="af" class="w-full rounded-2xl bg-white/5 border border-white/10 px-3 py-2" placeholder="first name"/>
+            <input id="al" class="w-full rounded-2xl bg-white/5 border border-white/10 px-3 py-2" placeholder="last name"/>
+          </div>
+          <select id="arole" class="w-full rounded-2xl bg-white/5 border border-white/10 px-3 py-2">
+            <option value="author">author</option>
+            <option value="editor">editor</option>
+            <option value="admin">admin</option>
+          </select>
+
+          <button id="createAuthor" class="w-full px-5 py-3 rounded-2xl bg-sky-500/20 border border-sky-400/30 hover:bg-sky-500/30">
+            Create user
+          </button>
+          <div id="aMsg" class="text-xs text-slate-400"></div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-7 card rounded-3xl p-6">
+        <div class="flex items-center justify-between">
+          <h3 class="font-extrabold text-lg">Authors list</h3>
+          <button id="reloadAuthors" class="text-sm text-sky-400 hover:underline">Reload</button>
+        </div>
+        <div id="authors" class="mt-4 space-y-2"></div>
+      </div>
+    </div>
+
+    <!-- Articles operations -->
+    <div class="card rounded-3xl p-6">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h3 class="font-extrabold text-lg">Articles</h3>
+        <div class="flex flex-wrap gap-2">
+          <select id="st" class="rounded-2xl bg-white/5 border border-white/10 px-3 py-2 text-sm">
+            <option value="">All</option>
+            <option value="published">published</option>
+            <option value="draft">draft</option>
+            <option value="scheduled">scheduled</option>
+          </select>
+          <input id="sq" class="rounded-2xl bg-white/5 border border-white/10 px-3 py-2 text-sm" placeholder="search..."/>
+          <button id="reloadArticles" class="px-4 py-2 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 text-sm">Load</button>
+        </div>
+      </div>
+      <div id="articles" class="mt-4 space-y-3"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="border-t border-white/10 py-10">
+  <div class="max-w-7xl mx-auto px-4 text-sm text-slate-400 flex flex-wrap items-center justify-between gap-3">
+    <div>© <span id="y"></span> NEWS.ULTRA</div>
+    <div class="flex items-center gap-4">
+      <a class="hover:underline" href="/sitemap.xml">Sitemap</a>
+      <a class="hover:underline" href="/rss.xml">RSS</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById("y").textContent = new Date().getFullYear();
+
+  function fmt(n){ return new Intl.NumberFormat().format(n||0); }
+  function esc(s){ return String(s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+
+  async function api(url, opts){
+    const r = await fetch(url, Object.assign({ credentials:"include" }, opts||{}));
+    const j = await r.json().catch(()=> ({}));
+    if(!r.ok) throw new Error(j.error || "Request failed");
+    return j;
+  }
+
+  let chart = null;
+
+  async function checkMe(){
+    const me = await api("/api/auth/me");
+    if(me.user && me.user.role === "admin"){
+      document.getElementById("loginBox").classList.add("hidden");
+      document.getElementById("dash").classList.remove("hidden");
+      document.getElementById("logoutBtn").classList.remove("hidden");
+      await refreshAll();
+    } else {
+      document.getElementById("loginBox").classList.remove("hidden");
+      document.getElementById("dash").classList.add("hidden");
+      document.getElementById("logoutBtn").classList.add("hidden");
+    }
+  }
+
+  async function refreshStats(){
+    const data = await api("/api/admin/stats?days=14");
+    const k = data.kpis;
+    document.getElementById("k1").textContent = fmt(k.totalArticles);
+    document.getElementById("k2").textContent = fmt(k.publishedArticles);
+    document.getElementById("k3").textContent = fmt(k.totalAuthors);
+    document.getElementById("k4").textContent = fmt(k.totalViews);
+    document.getElementById("k5").textContent = fmt(k.totalLikes);
+    document.getElementById("k6").textContent = fmt(k.totalComments);
+
+    const labels = data.series.map(x => x.day);
+    const views = data.series.map(x => x.views);
+    const likes = data.series.map(x => x.likes);
+    const comments = data.series.map(x => x.comments);
+
+    const ctx = document.getElementById("chart");
+    if(chart) chart.destroy();
+    chart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels,
+        datasets: [
+          { label: "Views", data: views, tension: 0.25 },
+          { label: "Likes", data: likes, tension: 0.25 },
+          { label: "Comments", data: comments, tension: 0.25 }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { labels: { color: "#cbd5e1" } } },
+        scales: {
+          x: { ticks: { color: "#94a3b8" }, grid: { color: "rgba(255,255,255,.06)" } },
+          y: { ticks: { color: "#94a3b8" }, grid: { color: "rgba(255,255,255,.06)" } }
+        }
+      }
+    });
+  }
+
+  async function refreshAuthors(){
+    const data = await api("/api/admin/authors");
+    const box = document.getElementById("authors");
+    box.innerHTML = (data.items||[]).map(a => `
+      <div class="rounded-2xl bg-white/5 border border-white/10 p-4">
+        <div class="flex items-center justify-between gap-2">
+          <div class="font-bold text-slate-200">${esc(a.username)} <span class="text-xs text-slate-400">(${esc(a.role)})</span></div>
+          <div class="text-xs text-slate-400">${a.createdAt ? new Date(a.createdAt).toLocaleString() : ""}</div>
+        </div>
+        <div class="mt-2 text-xs text-slate-400">
+          ${esc((a.firstName||"") + " " + (a.lastName||"")).trim()} • ${esc(a.email||"")} • ${esc(a.phone||"")}
+        </div>
+      </div>
+    `).join("") || `<div class="text-sm text-slate-400">No users found.</div>`;
+  }
+
+  async function refreshArticles(){
+    const status = document.getElementById("st").value;
+    const q = document.getElementById("sq").value.trim();
+    const p = new URLSearchParams();
+    if(status) p.set("status", status);
+    if(q) p.set("q", q);
+
+    const data = await api("/api/admin/articles?" + p.toString());
+    const box = document.getElementById("articles");
+    box.innerHTML = (data.items||[]).map(a => `
+      <div class="rounded-3xl bg-white/5 border border-white/10 p-5">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div class="font-extrabold text-slate-100">${esc(a.title)}</div>
+          <div class="text-xs text-slate-400">${a.updatedAt ? new Date(a.updatedAt).toLocaleString() : ""}</div>
+        </div>
+        <div class="mt-2 text-xs text-slate-400 flex flex-wrap gap-3 items-center">
+          <span class="chip px-2 py-1 rounded-full">${esc(a.status)}</span>
+          <span>${esc(a.category||"")}${a.subcategory ? " / " + esc(a.subcategory) : ""}</span>
+          <span class="ml-auto"><i class="bi bi-eye"></i> ${fmt(a.views)} <i class="bi bi-heart ms-2"></i> ${fmt(a.likes)} <i class="bi bi-chat-dots ms-2"></i> ${fmt(a.commentsCount)}</span>
+        </div>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <a class="px-4 py-2 rounded-xl bg-sky-500/20 border border-sky-400/30 hover:bg-sky-500/30 text-sm"
+             href="/editor.html?id=${encodeURIComponent(a._id)}">Edit</a>
+          <a class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-sm"
+             href="/article.html?slug=${encodeURIComponent(a.slug)}" target="_blank" rel="noopener">Open</a>
+          <a class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-sm"
+             href="/a/${encodeURIComponent(a.slug)}" target="_blank" rel="noopener">SEO</a>
+          <button data-del="${esc(a._id)}"
+             class="ml-auto px-4 py-2 rounded-xl bg-rose-500/15 border border-rose-400/25 hover:bg-rose-500/25 text-sm">
+             Delete
+          </button>
+        </div>
+      </div>
+    `).join("") || `<div class="text-sm text-slate-400">No articles.</div>`;
+
+    box.querySelectorAll("button[data-del]").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const id = btn.getAttribute("data-del");
+        if(!confirm("Delete article?")) return;
+        try{
+          await api("/api/admin/articles/" + encodeURIComponent(id), { method:"DELETE" });
+          await refreshArticles();
+          await refreshStats();
+        }catch(e){
+          alert(e.message);
+        }
+      });
+    });
+  }
+
+  async function refreshAll(){
+    await refreshStats();
+    await refreshAuthors();
+    await refreshArticles();
+  }
+
+  document.getElementById("loginBtn").addEventListener("click", async () => {
+    const msg = document.getElementById("loginMsg");
+    msg.textContent = "";
+    try{
+      await api("/api/auth/login", {
+        method:"POST",
+        headers: { "Content-Type":"application/json" },
+        body: JSON.stringify({ username: document.getElementById("u").value.trim(), password: document.getElementById("p").value })
+      });
+      await checkMe();
+    }catch(e){
+      msg.textContent = e.message;
+    }
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    await api("/api/auth/logout", { method:"POST" }).catch(()=>{});
+    location.reload();
+  });
+
+  document.getElementById("refreshBtn").addEventListener("click", refreshAll);
+  document.getElementById("reloadAuthors").addEventListener("click", refreshAuthors);
+  document.getElementById("reloadArticles").addEventListener("click", refreshArticles);
+
+  document.getElementById("createAuthor").addEventListener("click", async () => {
+    const msg = document.getElementById("aMsg");
+    msg.textContent = "";
+    try{
+      await api("/api/admin/authors", {
+        method:"POST",
+        headers: { "Content-Type":"application/json" },
+        body: JSON.stringify({
+          username: document.getElementById("au").value.trim(),
+          password: document.getElementById("ap").value,
+          role: document.getElementById("arole").value,
+          firstName: document.getElementById("af").value.trim(),
+          lastName: document.getElementById("al").value.trim()
+        })
+      });
+      msg.textContent = "User created.";
+      await refreshAuthors();
+    }catch(e){
+      msg.textContent = e.message;
+    }
+  });
+
+  checkMe();
+</script>
+</body>
+</html>

@@ -1,0 +1,425 @@
+<!-- public/article.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Article — NEWS.ULTRA</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+  <style>
+    :root { color-scheme: dark; }
+    .glass { background: rgba(0,0,0,.78); backdrop-filter: blur(14px); }
+    .card  { background: rgba(0,0,0,.55); border: 1px solid rgba(255,255,255,.12); }
+    .card2 { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14); }
+    .btn   { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14); }
+    .btn:hover { background: rgba(255,255,255,.10); }
+    .btnp  { background: rgba(56,189,248,.20); border: 1px solid rgba(56,189,248,.32); }
+    .btnp:hover { background: rgba(56,189,248,.30); }
+    .btnr  { background: rgba(244,63,94,.18); border: 1px solid rgba(244,63,94,.30); }
+    .btnr:hover { background: rgba(244,63,94,.28); }
+
+    /* prose safety + readability */
+    .prose a { color:#38bdf8; text-decoration: none; }
+    .prose a:hover { text-decoration: underline; }
+    .prose img, .prose video { border-radius: 16px; border: 1px solid rgba(255,255,255,.10); }
+    .prose pre, .prose code {
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 14px;
+      padding: 10px 12px;
+      overflow-x: auto;
+    }
+    .muted { color: rgba(226,232,240,.72); }
+  </style>
+</head>
+
+<body class="bg-slate-950 text-slate-100">
+
+<header class="sticky top-0 z-50 border-b border-white/10 glass">
+  <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
+    <a href="/" class="font-extrabold text-xl tracking-tight">NEWS<span class="text-sky-400">.ULTRA</span></a>
+    <nav class="flex items-center gap-2 text-sm text-slate-300">
+      <a class="px-3 py-2 rounded-xl hover:bg-white/10" href="/articles.html"><i class="bi bi-grid-1x2"></i> Articles</a>
+      <a id="seoLink" class="px-3 py-2 rounded-xl hover:bg-white/10" href="#"><i class="bi bi-globe"></i> SEO view</a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-4 py-8">
+  <div id="state" class="card rounded-3xl p-6 text-slate-300">Loading...</div>
+
+  <article id="wrap" class="hidden">
+    <div class="flex flex-wrap items-center gap-2 text-xs text-slate-400">
+      <span id="cat" class="px-2 py-1 rounded bg-white/5 border border-white/10"></span>
+      <span id="subcat" class="px-2 py-1 rounded bg-white/5 border border-white/10 hidden"></span>
+      <span class="ml-auto" id="date"></span>
+    </div>
+
+    <h1 id="title" class="mt-3 text-3xl md:text-5xl font-black leading-tight"></h1>
+    <p id="excerpt" class="mt-3 muted"></p>
+
+    <div class="mt-4 text-sm text-slate-200 flex flex-wrap items-center gap-2">
+      <span class="text-slate-400">By</span>
+      <a id="authorLink" class="text-sky-300 hover:underline" href="#" target="_self">—</a>
+      <span id="authorRole" class="ml-2 hidden px-2 py-1 rounded bg-white/5 border border-white/10 text-xs text-slate-300"></span>
+    </div>
+
+    <img id="cover" class="mt-6 w-full rounded-3xl border border-white/10 hidden" alt="cover"/>
+
+    <div class="mt-6 flex flex-wrap items-center gap-3">
+      <button id="likeBtn" class="px-5 py-3 rounded-2xl btnr text-sm">
+        <i class="bi bi-heart"></i> Like <span id="likes" class="ml-2 text-slate-100 font-semibold">0</span>
+      </button>
+
+      <div class="text-sm text-slate-400 flex items-center gap-4">
+        <span><i class="bi bi-eye"></i> <span id="views">0</span></span>
+        <span><i class="bi bi-chat-dots"></i> <span id="cc">0</span></span>
+      </div>
+
+      <div class="ml-auto flex flex-wrap gap-2">
+        <button id="copyLink" class="px-4 py-2 rounded-xl btn text-sm">Copy link</button>
+        <a class="px-4 py-2 rounded-xl btn text-sm" href="/rss.xml">RSS</a>
+      </div>
+    </div>
+
+    <!-- content -->
+    <div class="mt-8 card rounded-3xl p-6">
+      <div id="content" class="prose prose-invert max-w-none"></div>
+    </div>
+
+    <!-- embeds -->
+    <section class="mt-8 grid lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 card rounded-3xl p-6">
+        <div class="flex items-center justify-between">
+          <h2 class="font-extrabold text-lg">Media previews</h2>
+          <span class="text-xs text-slate-400">YouTube / Instagram / Telegram</span>
+        </div>
+
+        <div id="ytWrap" class="mt-4 hidden">
+          <div class="text-sm text-slate-300 font-semibold">YouTube</div>
+          <div class="mt-2 aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black/40">
+            <iframe id="yt"
+              class="w-full h-full"
+              src=""
+              title="YouTube preview"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen></iframe>
+          </div>
+        </div>
+
+        <div id="igWrap" class="mt-6 hidden">
+          <div class="text-sm text-slate-300 font-semibold">Instagram</div>
+          <div class="mt-2 rounded-2xl border border-white/10 p-3 bg-white/5">
+            <div id="igEmbed" class="min-h-[120px]"></div>
+            <div class="mt-2 text-xs text-slate-400">Embed works only for public posts. If it fails, open the link.</div>
+            <a id="igLink" class="mt-2 inline-block text-sm text-sky-300 hover:underline" href="#" target="_blank" rel="noopener">Open Instagram</a>
+          </div>
+        </div>
+
+        <div id="tgWrap" class="mt-6 hidden">
+          <div class="text-sm text-slate-300 font-semibold">Telegram</div>
+          <div class="mt-2 rounded-2xl border border-white/10 p-3 bg-white/5">
+            <div id="tgEmbed" class="min-h-[120px]"></div>
+            <div class="mt-2 text-xs text-slate-400">Widget loads only for public posts.</div>
+            <a id="tgLink" class="mt-2 inline-block text-sm text-sky-300 hover:underline" href="#" target="_blank" rel="noopener">Open Telegram</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- comments -->
+      <aside class="card rounded-3xl p-6">
+        <h2 class="font-extrabold text-lg">Comments</h2>
+
+        <div class="mt-4 space-y-2">
+          <input id="cName" class="w-full rounded-2xl bg-white/5 border border-white/10 px-3 py-2 text-sm outline-none"
+                 placeholder="Your name (optional)" />
+          <textarea id="cText" class="w-full rounded-2xl bg-white/5 border border-white/10 px-3 py-2 text-sm outline-none min-h-[120px]"
+                    placeholder="Write a comment..."></textarea>
+          <button id="sendComment" class="w-full px-5 py-3 rounded-2xl btnp text-sm">
+            Send comment
+          </button>
+          <div id="cMsg" class="text-xs text-slate-400"></div>
+        </div>
+
+        <div class="mt-6 border-t border-white/10 pt-4">
+          <div class="text-xs text-slate-400 flex items-center justify-between">
+            <span>Latest</span>
+            <button id="refreshComments" class="hover:underline">Refresh</button>
+          </div>
+          <div id="comments" class="mt-3 space-y-3"></div>
+        </div>
+      </aside>
+    </section>
+
+    <div class="mt-10 flex flex-wrap gap-3">
+      <a class="px-5 py-3 rounded-2xl btn text-sm" href="/articles.html">
+        Back to articles
+      </a>
+      <a id="seoBtn" class="px-5 py-3 rounded-2xl btnp text-sm" href="#" target="_blank" rel="noopener">
+        Open SEO page
+      </a>
+    </div>
+  </article>
+</main>
+
+<footer class="border-t border-white/10 py-10">
+  <div class="max-w-6xl mx-auto px-4 text-sm text-slate-400 flex flex-wrap items-center justify-between gap-3">
+    <div>© <span id="y"></span> NEWS.ULTRA</div>
+    <div class="flex items-center gap-4">
+      <a class="hover:underline" href="/sitemap.xml">Sitemap</a>
+      <a class="hover:underline" href="/robots.txt">Robots</a>
+      <a class="hover:underline" href="/rss.xml">RSS</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById("y").textContent = new Date().getFullYear();
+
+  function fmt(n){ return new Intl.NumberFormat().format(n||0); }
+  function esc(s){ return String(s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+  function qs(){ return new URLSearchParams(location.search); }
+
+  function loadScriptOnce(src, id){
+    return new Promise((resolve, reject) => {
+      if(id && document.getElementById(id)) return resolve();
+      const s = document.createElement("script");
+      if(id) s.id = id;
+      s.src = src;
+      s.async = true;
+      s.onload = () => resolve();
+      s.onerror = () => reject(new Error("Failed to load script"));
+      document.head.appendChild(s);
+    });
+  }
+
+  function youtubeEmbed(url){
+    if(!url) return "";
+    try{
+      const u = new URL(url);
+      let id = "";
+      if(u.hostname.includes("youtu.be")) id = u.pathname.slice(1);
+      if(u.hostname.includes("youtube.com")){
+        id = u.searchParams.get("v") || "";
+        if(!id && u.pathname.includes("/embed/")) id = u.pathname.split("/embed/")[1] || "";
+        if(!id && u.pathname.includes("/shorts/")) id = u.pathname.split("/shorts/")[1] || "";
+      }
+      if(!id) return "";
+      id = id.split("?")[0].split("&")[0].split("/")[0];
+      return "https://www.youtube.com/embed/" + encodeURIComponent(id);
+    }catch{ return ""; }
+  }
+
+  function instagramEmbedNode(url){
+    // IMPORTANT: do NOT inject <script> as HTML. Use blockquote + load script separately.
+    const block = document.createElement("blockquote");
+    block.className = "instagram-media";
+    block.setAttribute("data-instgrm-permalink", url);
+    block.setAttribute("data-instgrm-version", "14");
+    block.style.cssText = "background:#070a12;border:1px solid rgba(255,255,255,.10);border-radius:16px;margin:0;padding:12px;";
+    return block;
+  }
+
+  function telegramWidgetNode(url){
+    // Expect: https://t.me/<channel>/<post>
+    const u = new URL(url);
+    if(!u.hostname.includes("t.me")) return null;
+    const parts = u.pathname.split("/").filter(Boolean);
+    if(parts.length < 2) return null;
+    const dataPost = parts[0] + "/" + parts[1];
+
+    const s = document.createElement("script");
+    s.async = true;
+    s.src = "https://telegram.org/js/telegram-widget.js?22";
+    s.setAttribute("data-telegram-post", dataPost);
+    s.setAttribute("data-width", "100%");
+    return s;
+  }
+
+  async function api(url, opts){
+    const r = await fetch(url, Object.assign({ credentials: "include" }, opts || {}));
+    const j = await r.json().catch(()=> ({}));
+    if(!r.ok) throw new Error(j.error || "Request failed");
+    return j;
+  }
+
+  let article = null;
+
+  async function load(){
+    const slug = qs().get("slug");
+    if(!slug){
+      document.getElementById("state").textContent = "No slug provided. Open from articles list.";
+      return;
+    }
+
+    const data = await api("/api/articles/" + encodeURIComponent(slug));
+    article = data.item;
+
+    document.getElementById("state").classList.add("hidden");
+    document.getElementById("wrap").classList.remove("hidden");
+
+    document.title = (article.title || "Article") + " — NEWS.ULTRA";
+
+    document.getElementById("cat").textContent = article.category || "General";
+    if(article.subcategory){
+      document.getElementById("subcat").classList.remove("hidden");
+      document.getElementById("subcat").textContent = article.subcategory;
+    }
+
+    document.getElementById("date").textContent = article.publishedAt ? new Date(article.publishedAt).toLocaleString() : "";
+    document.getElementById("title").textContent = article.title || "";
+    document.getElementById("excerpt").textContent = article.excerpt || "";
+    document.getElementById("content").innerHTML = article.contentHtml || "";
+
+    // Author + link
+    const aName = article.authorName || "Author";
+    const aUser = article.authorUsername || "";
+    const authorLink = document.getElementById("authorLink");
+    authorLink.textContent = aName;
+    authorLink.href = aUser ? ("/profile.html?u=" + encodeURIComponent(aUser)) : "#";
+
+    if(article.coverUrl){
+      const img = document.getElementById("cover");
+      img.src = article.coverUrl;
+      img.classList.remove("hidden");
+    }
+
+    document.getElementById("views").textContent = fmt(article.views);
+    document.getElementById("likes").textContent = fmt(article.likes);
+    document.getElementById("cc").textContent = fmt(article.commentsCount);
+
+    const seo = "/a/" + encodeURIComponent(article.slug);
+    document.getElementById("seoLink").href = seo;
+    document.getElementById("seoBtn").href = seo;
+
+    // Count view (unique per day)
+    try{
+      const v = await api("/api/articles/" + article._id + "/view", { method:"POST" });
+      if(v.counted){
+        article.views += 1;
+        document.getElementById("views").textContent = fmt(article.views);
+      }
+    }catch{}
+
+    // Embeds (NO script HTML injection)
+    const yt = youtubeEmbed(article.youtubeUrl);
+    if(yt){
+      document.getElementById("ytWrap").classList.remove("hidden");
+      document.getElementById("yt").src = yt;
+    }
+
+    if(article.instagramUrl){
+      document.getElementById("igWrap").classList.remove("hidden");
+      document.getElementById("igLink").href = article.instagramUrl;
+
+      const igBox = document.getElementById("igEmbed");
+      igBox.innerHTML = ""; // clear
+      igBox.appendChild(instagramEmbedNode(article.instagramUrl));
+
+      try{
+        await loadScriptOnce("https://www.instagram.com/embed.js", "ig-embed-js");
+        // After script loaded, request processing
+        if (window.instgrm && window.instgrm.Embeds && window.instgrm.Embeds.process) {
+          window.instgrm.Embeds.process();
+        }
+      }catch{
+        // ignore (link still works)
+      }
+    }
+
+    if(article.telegramUrl){
+      document.getElementById("tgWrap").classList.remove("hidden");
+      document.getElementById("tgLink").href = article.telegramUrl;
+
+      const tgBox = document.getElementById("tgEmbed");
+      tgBox.innerHTML = "";
+      try{
+        const node = telegramWidgetNode(article.telegramUrl);
+        if(node) tgBox.appendChild(node);
+      }catch{
+        // ignore
+      }
+    }
+
+    await loadComments();
+  }
+
+  async function loadComments(){
+    if(!article) return;
+    const data = await api("/api/articles/" + article._id + "/comments");
+    const box = document.getElementById("comments");
+    const items = data.items || [];
+    box.innerHTML = items.map(c => `
+      <div class="rounded-2xl bg-white/5 border border-white/10 p-3">
+        <div class="text-xs text-slate-400 flex items-center justify-between">
+          <span><i class="bi bi-person-circle"></i> ${esc(c.name || "Guest")}</span>
+          <span>${c.createdAt ? new Date(c.createdAt).toLocaleString() : ""}</span>
+        </div>
+        <div class="mt-2 text-sm text-slate-200 whitespace-pre-wrap">${esc(c.text || "")}</div>
+      </div>
+    `).join("") || `<div class="text-sm text-slate-400">No comments yet.</div>`;
+  }
+
+  document.getElementById("refreshComments").addEventListener("click", loadComments);
+
+  document.getElementById("likeBtn").addEventListener("click", async () => {
+    if(!article) return;
+    try{
+      const data = await api("/api/articles/" + article._id + "/like", { method:"POST" });
+      article.likes += data.liked ? 1 : -1;
+      if(article.likes < 0) article.likes = 0;
+      document.getElementById("likes").textContent = fmt(article.likes);
+    }catch(e){
+      alert(e.message);
+    }
+  });
+
+  document.getElementById("sendComment").addEventListener("click", async () => {
+    if(!article) return;
+    const name = document.getElementById("cName").value.trim();
+    const text = document.getElementById("cText").value.trim();
+    const msg = document.getElementById("cMsg");
+    msg.textContent = "";
+
+    if(text.length < 2){
+      msg.textContent = "Comment is too short.";
+      return;
+    }
+
+    try{
+      await api("/api/articles/" + article._id + "/comment", {
+        method:"POST",
+        headers: { "Content-Type":"application/json" },
+        body: JSON.stringify({ name, text })
+      });
+      document.getElementById("cText").value = "";
+      article.commentsCount += 1;
+      document.getElementById("cc").textContent = fmt(article.commentsCount);
+      await loadComments();
+      msg.textContent = "Comment sent.";
+    }catch(e){
+      msg.textContent = e.message;
+    }
+  });
+
+  document.getElementById("copyLink").addEventListener("click", async () => {
+    const url = location.href;
+    try{
+      await navigator.clipboard.writeText(url);
+      alert("Copied");
+    }catch{
+      prompt("Copy:", url);
+    }
+  });
+
+  load().catch(e => {
+    document.getElementById("state").textContent = e.message || "Failed to load";
+  });
+</script>
+</body>
+</html>

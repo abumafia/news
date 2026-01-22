@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Editor — NEWS.ULTRA</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+  <!-- Quill (rich editor) -->
+  <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
+
+  <style>
+    /* =========================
+       ULTRA DARK (HIGH CONTRAST)
+       ========================= */
+    :root{
+      --bg0: #020617; /* slate-950 */
+      --bg1: rgba(0,0,0,0.70); /* glass */
+      --bg2: rgba(0,0,0,0.55); /* cards */
+      --bd1: rgba(255,255,255,0.10);
+      --bd2: rgba(255,255,255,0.14);
+      --txt: #e5e7eb;
+      --muted: rgba(226,232,240,0.72);
+      --muted2: rgba(226,232,240,0.55);
+      --shadow: 0 0 0 1px rgba(56,189,248,0.12), 0 20px 60px rgba(0,0,0,0.45);
+      --shadow2: 0 0 0 1px rgba(255,255,255,0.08), 0 20px 60px rgba(0,0,0,0.45);
+    }
+
+    html, body { height: 100%; }
+    body{
+      background: radial-gradient(1200px 600px at 20% -10%, rgba(56,189,248,0.10), transparent 60%),
+                  radial-gradient(1200px 600px at 100% 0%, rgba(244,63,94,0.07), transparent 55%),
+                  radial-gradient(800px 500px at 60% 120%, rgba(34,197,94,0.06), transparent 55%),
+                  var(--bg0);
+      color: var(--txt);
+    }
+
+    /* Glass / card */
+    .glass{
+      background: var(--bg1);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .card{
+      background: var(--bg2);
+      border: 1px solid var(--bd1);
+      box-shadow: var(--shadow2);
+    }
+
+    /* Buttons */
+    .btn{
+      border: 1px solid var(--bd2);
+      background: rgba(0,0,0,0.55);
+      color: rgba(226,232,240,0.92);
+      transition: 160ms ease;
+    }
+    .btn:hover{
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.18);
+      box-shadow: var(--shadow);
+      transform: translateY(-1px);
+    }
+    .btn:active{ transform: translateY(0px); }
+
+    .danger{
+      border-color: rgba(244,63,94,0.35) !important;
+      background: rgba(244,63,94,0.12) !important;
+    }
+    .danger:hover{
+      background: rgba(244,63,94,0.18) !important;
+      border-color: rgba(244,63,94,0.50) !important;
+    }
+    .ok{
+      border-color: rgba(34,197,94,0.35) !important;
+      background: rgba(34,197,94,0.12) !important;
+    }
+    .ok:hover{
+      background: rgba(34,197,94,0.18) !important;
+      border-color: rgba(34,197,94,0.50) !important;
+    }
+
+    /* Inputs */
+    input, textarea, select{
+      color: rgba(226,232,240,0.95) !important;
+    }
+    input::placeholder, textarea::placeholder{
+      color: rgba(148,163,184,0.70);
+    }
+
+    /* Quill theme to ULTRA DARK */
+    .ql-toolbar.ql-snow{
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px 16px 0 0;
+      background: rgba(0,0,0,0.60);
+      box-shadow: var(--shadow2);
+    }
+    .ql-container.ql-snow{
+      border: 1px solid rgba(255,255,255,0.12);
+      border-top: 0;
+      border-radius: 0 0 16px 16px;
+      background: rgba(0,0,0,0.60);
+      color: rgba(226,232,240,0.95);
+      min-height: 380px;
+      box-shadow: var(--shadow2);
+    }
+    .ql-snow .ql-picker, .ql-snow .ql-picker-label{
+      color: rgba(226,232,240,0.92) !important;
+    }
+    .ql-snow .ql-stroke{ stroke: rgba(226,232,240,0.88) !important; }
+    .ql-snow .ql-fill{ fill: rgba(226,232,240,0.88) !important; }
+    .ql-snow .ql-picker-options{
+      background: rgba(2,6,23,0.98) !important;
+      border: 1px solid rgba(255,255,255,0.10) !important;
+    }
+    .ql-editor{
+      font-size: 16px;
+      line-height: 1.75;
+    }
+    .ql-editor a{ color: #38bdf8; text-decoration: underline; }
+    .ql-editor.ql-blank::before{
+      color: rgba(148,163,184,0.75) !important;
+    }
+
+    /* Minor */
+    .muted{ color: var(--muted); }
+    .muted2{ color: var(--muted2); }
+    .hairline{ border-color: rgba(255,255,255,0.10) !important; }
+  </style>
+</head>
+
+<body class="text-slate-100">
+<header class="sticky top-0 z-50 border-b hairline glass">
+  <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+    <a href="/" class="font-extrabold text-xl tracking-tight">NEWS<span class="text-sky-400">.ULTRA</span></a>
+    <nav class="flex items-center gap-2 text-sm text-slate-300">
+      <a class="px-3 py-2 rounded-xl hover:bg-white/10" href="/"><i class="bi bi-house"></i> Home</a>
+      <a class="px-3 py-2 rounded-xl hover:bg-white/10" href="/articles.html"><i class="bi bi-grid-1x2"></i> Articles</a>
+      <a class="px-3 py-2 rounded-xl hover:bg-white/10" href="/admin.html"><i class="bi bi-shield-lock"></i> Admin</a>
+      <a id="profileLink" class="px-3 py-2 rounded-xl hover:bg-white/10 hidden" href="/profile.html"><i class="bi bi-person"></i> Profile</a>
+      <button id="logoutBtn" class="px-3 py-2 rounded-xl hover:bg-white/10 hidden"><i class="bi bi-box-arrow-right"></i> Logout</button>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-8">
+  <!-- Login -->
+  <section id="loginBox" class="max-w-xl mx-auto card rounded-3xl p-6">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-black">Editor Login</h1>
+        <p class="mt-1 text-sm muted">Author / Editor / Admin kiradi. Maqola yaratish va publish qilish shu yerda.</p>
+      </div>
+      <div class="text-xs muted">
+        <div class="px-3 py-2 rounded-2xl bg-black/40 border hairline">
+          <div><i class="bi bi-info-circle"></i> Tip</div>
+          <div class="mt-1">Admin panelda user ochib beriladi.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6 grid gap-3">
+      <input id="u" class="w-full rounded-2xl bg-black/50 border hairline px-4 py-3 outline-none" placeholder="username"/>
+      <input id="p" type="password" class="w-full rounded-2xl bg-black/50 border hairline px-4 py-3 outline-none" placeholder="password"/>
+      <button id="loginBtn" class="w-full px-5 py-3 rounded-2xl bg-sky-500/20 border border-sky-400/30 hover:bg-sky-500/30">
+        Login
+      </button>
+      <div id="lMsg" class="text-xs muted2"></div>
+    </div>
+  </section>
+
+  <!-- Dashboard -->
+  <section id="dash" class="hidden">
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <h1 class="text-3xl font-black">Editor Workspace</h1>
+        <p class="text-sm muted">
+          Draft saqlash, cover upload (Cloudinary), embed linklar (YouTube/Instagram/Telegram), Publish/Schedule.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        <button id="newBtn" class="px-4 py-2 rounded-2xl btn"><i class="bi bi-plus-circle"></i> New</button>
+        <button id="saveBtn" class="px-4 py-2 rounded-2xl btn"><i class="bi bi-save2"></i> Save draft</button>
+        <button id="publishBtn" class="px-4 py-2 rounded-2xl btn ok"><i class="bi bi-broadcast"></i> Publish now</button>
+        <button id="scheduleBtn" class="px-4 py-2 rounded-2xl btn"><i class="bi bi-calendar2-event"></i> Schedule</button>
+        <a id="openSeoBtn" class="px-4 py-2 rounded-2xl btn hidden" target="_blank" rel="noopener"><i class="bi bi-globe2"></i> SEO</a>
+        <a id="openUiBtn" class="px-4 py-2 rounded-2xl btn hidden" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right"></i> UI</a>
+      </div>
+    </div>
+
+    <div class="mt-6 grid lg:grid-cols-12 gap-6">
+      <!-- Left: my articles -->
+      <aside class="lg:col-span-4">
+        <div class="card rounded-3xl p-5">
+          <div class="flex items-center justify-between">
+            <h3 class="font-extrabold text-lg">My Articles</h3>
+            <button id="reloadMine" class="text-sm text-sky-400 hover:underline">Reload</button>
+          </div>
+
+          <div class="mt-3 flex items-center gap-2">
+            <input id="mineQ" class="w-full rounded-2xl bg-black/50 border hairline px-3 py-2 text-sm outline-none" placeholder="Filter title..."/>
+            <select id="mineFilter" class="rounded-2xl bg-black/50 border hairline px-3 py-2 text-sm outline-none">
+              <option value="">All</option>
+              <option value="draft">draft</option>
+              <option value="published">published</option>
+              <option value="scheduled">scheduled</option>
+            </select>
+          </div>
+
+          <div id="mineList" class="mt-4 space-y-2"></div>
+          <div class="mt-3 text-xs muted2">Click item to load into editor.</div>
+        </div>
+
+        <div class="mt-6 card rounded-3xl p-5">
+          <h3 class="font-extrabold text-lg">Cover / Media</h3>
+          <p class="mt-1 text-sm muted">Cover rasmni Cloudinary’ga yuklaysiz, keyin maqolaga biriktiriladi.</p>
+
+          <div class="mt-4 grid gap-2">
+            <input id="coverFile" type="file" accept="image/*" class="block w-full text-sm text-slate-200"/>
+            <button id="uploadCoverBtn" class="px-4 py-2 rounded-2xl btn">
+              <i class="bi bi-cloud-upload"></i> Upload cover
+            </button>
+            <div id="coverMsg" class="text-xs muted2"></div>
+
+            <div id="coverPreviewWrap" class="hidden">
+              <img id="coverPreview" class="mt-3 w-full h-44 object-cover rounded-2xl border hairline" alt="cover"/>
+              <button id="clearCoverBtn" class="mt-2 w-full px-4 py-2 rounded-2xl btn danger">
+                <i class="bi bi-trash"></i> Remove cover (local)
+              </button>
+            </div>
+
+            <div class="mt-3 text-xs muted2">
+              Note: Cover’ni o‘chirish Cloudinary’dan avtomatik delete emas; draftni saqlaganda cover maydoni yangilanadi.
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Right: editor form -->
+      <section class="lg:col-span-8">
+        <div class="card rounded-3xl p-6">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 class="text-xl font-extrabold">Article Editor</h2>
+              <div class="text-xs muted2">
+                ID: <span id="aid">—</span> • Slug: <span id="aslug">—</span> • Status: <span id="astatus">—</span>
+              </div>
+            </div>
+            <div class="text-xs muted2" id="saveState">Ready.</div>
+          </div>
+
+          <div class="mt-5 grid md:grid-cols-12 gap-4">
+            <div class="md:col-span-8">
+              <label class="text-xs muted2">Title</label>
+              <input id="title" class="mt-2 w-full rounded-2xl bg-black/50 border hairline px-4 py-3 outline-none" placeholder="Headline..."/>
+            </div>
+            <div class="md:col-span-4">
+              <label class="text-xs muted2">Category</label>
+              <input id="category" class="mt-2 w-full rounded-2xl bg-black/50 border hairline px-4 py-3 outline-none" placeholder="e.g. Tech"/>
+            </div>
+            <div class="md:col-span-6">
+              <label class="text-xs muted2">Subcategory</label>
+              <input id="subcategory" class="mt-2 w-full rounded-2xl bg-black/50 border hairline px-4 py-3 outline-none" placeholder="e.g. Web"/>
+            </div>
+            <div class="md:col-span-6">
+              <label class="text-xs muted2">Tags (comma)</label>
+              <input id="tags" class="mt-2 w-full rounded-2xl bg-black/50 border hairline px-4 py-3 outline-none" placeholder="nodejs, mongodb, seo"/>
+            </div>
+
+            <div class="md:col-span-12">
+              <label class="text-xs muted2">Excerpt (short description)</label>
+              <textarea id="excerpt" rows="2" class="mt-2 w-full rounded-2xl bg-black/50 border hairline px-4 py-3 outline-none" placeholder="Short summary for cards and SEO..."></textarea>
+            </div>
+
+            <div class="md:col-span-12">
+              <label class="text-xs muted2">Content</label>
+              <div class="mt-2">
+                <div id="quill"></div>
+              </div>
+            </div>
+
+            <div class="md:col-span-4">
+              <label class="text-xs muted2">YouTube URL</label>
+              <input id="youtubeUrl" class="mt-2 w-full rounded-2xl bg-black/50 border hairline px-4 py-3 outline-none" placeholder="https://youtu.be/..."/>
+            </div>
+            <div class="md:col-span-4">
+              <label class="text-xs muted2">Instagram Post URL</label>
+              <input id="instagramUrl" class="mt-2 w-full rounded-2xl bg-black/50 border hairline px-4 py-3 outline-none" placeholder="https://www.instagram.com/p/..."/>
+            </div>
+            <div class="md:col-span-4">
+              <label class="text-xs muted2">Telegram Post URL</label>
+              <input id="telegramUrl" class="mt-2 w-full rounded-2xl bg-black/50 border hairline px-4 py-3 outline-none" placeholder="https://t.me/channel/123"/>
+            </div>
+
+            <div class="md:col-span-12">
+              <div class="mt-2 rounded-2xl bg-black/50 border hairline p-4 text-sm text-slate-200">
+                <div class="font-semibold">Publish options</div>
+                <div class="mt-2 grid md:grid-cols-3 gap-2">
+                  <input id="scheduleAt" type="datetime-local" class="rounded-2xl bg-black/60 border hairline px-4 py-3 outline-none"/>
+                  <button id="scheduleApplyBtn" class="px-4 py-2 rounded-2xl btn"><i class="bi bi-clock"></i> Apply schedule</button>
+                  <button id="resetScheduleBtn" class="px-4 py-2 rounded-2xl btn danger"><i class="bi bi-x-circle"></i> Reset schedule field</button>
+                </div>
+                <div class="mt-2 text-xs muted2">
+                  Schedule: vaqt tanlang → Apply schedule (server schedule endpointga yuboradi).
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 flex flex-wrap gap-2">
+            <button id="saveBtn2" class="px-4 py-2 rounded-2xl btn"><i class="bi bi-save2"></i> Save draft</button>
+            <button id="publishBtn2" class="px-4 py-2 rounded-2xl btn ok"><i class="bi bi-broadcast"></i> Publish now</button>
+            <button id="previewBtn" class="px-4 py-2 rounded-2xl btn"><i class="bi bi-eye"></i> Preview SEO</button>
+            <button id="copySeoBtn" class="px-4 py-2 rounded-2xl btn"><i class="bi bi-clipboard"></i> Copy SEO link</button>
+            <div id="msg" class="ml-auto text-xs muted2"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </section>
+</main>
+
+<script>
+  function esc(s){ return String(s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+  async function api(url, opts){
+    const r = await fetch(url, Object.assign({ credentials:"include" }, opts||{}));
+    const j = await r.json().catch(()=> ({}));
+    if(!r.ok) throw new Error(j.error || "Request failed");
+    return j;
+  }
+
+  const state = {
+    me: null,
+    articleId: "",
+    slug: "",
+    status: "",
+    coverUrl: "",
+    coverPublicId: "",
+    mine: []
+  };
+
+  const quill = new Quill('#quill', {
+    theme: 'snow',
+    modules: {
+      toolbar: [
+        [{ header: [1,2,3,false] }],
+        ['bold','italic','underline','strike'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        ['blockquote','code-block'],
+        ['link','image'],
+        [{ 'align': [] }],
+        ['clean']
+      ]
+    }
+  });
+
+  function setTopLinks(){
+    const pl = document.getElementById("profileLink");
+    if(state.me?.username){
+      pl.href = "/profile.html?u=" + encodeURIComponent(state.me.username);
+      pl.classList.remove("hidden");
+    }
+  }
+
+  function setArticleMeta(){
+    document.getElementById("aid").textContent = state.articleId || "—";
+    document.getElementById("aslug").textContent = state.slug || "—";
+    document.getElementById("astatus").textContent = state.status || "—";
+
+    const openSeoBtn = document.getElementById("openSeoBtn");
+    const openUiBtn = document.getElementById("openUiBtn");
+
+    if(state.slug){
+      openSeoBtn.href = "/a/" + encodeURIComponent(state.slug);
+      openUiBtn.href = "/article.html?slug=" + encodeURIComponent(state.slug);
+      openSeoBtn.classList.remove("hidden");
+      openUiBtn.classList.remove("hidden");
+    } else {
+      openSeoBtn.classList.add("hidden");
+      openUiBtn.classList.add("hidden");
+    }
+  }
+
+  function fillForm(a){
+    document.getElementById("title").value = a.title || "";
+    document.getElementById("excerpt").value = a.excerpt || "";
+    document.getElementById("category").value = a.category || "General";
+    document.getElementById("subcategory").value = a.subcategory || "";
+    document.getElementById("tags").value = Array.isArray(a.tags) ? a.tags.join(", ") : (a.tags||"");
+    document.getElementById("youtubeUrl").value = a.youtubeUrl || "";
+    document.getElementById("instagramUrl").value = a.instagramUrl || "";
+    document.getElementById("telegramUrl").value = a.telegramUrl || "";
+    quill.root.innerHTML = a.contentHtml || "";
+
+    state.coverUrl = a.coverUrl || "";
+    state.coverPublicId = a.coverPublicId || "";
+    syncCoverPreview();
+  }
+
+  function syncCoverPreview(){
+    const wrap = document.getElementById("coverPreviewWrap");
+    const img = document.getElementById("coverPreview");
+    if(state.coverUrl){
+      wrap.classList.remove("hidden");
+      img.src = state.coverUrl;
+    } else {
+      wrap.classList.add("hidden");
+      img.removeAttribute("src");
+    }
+  }
+
+  function getPayload(){
+    return {
+      id: state.articleId || "",
+      title: document.getElementById("title").value.trim(),
+      excerpt: document.getElementById("excerpt").value.trim(),
+      category: document.getElementById("category").value.trim() || "General",
+      subcategory: document.getElementById("subcategory").value.trim(),
+      tags: document.getElementById("tags").value.trim(),
+      contentHtml: quill.root.innerHTML,
+      coverUrl: state.coverUrl,
+      coverPublicId: state.coverPublicId,
+      youtubeUrl: document.getElementById("youtubeUrl").value.trim(),
+      instagramUrl: document.getElementById("instagramUrl").value.trim(),
+      telegramUrl: document.getElementById("telegramUrl").value.trim(),
+    };
+  }
+
+  function toast(text){
+    const msg = document.getElementById("msg");
+    msg.textContent = text || "";
+  }
+
+  async function login(){
+    const username = document.getElementById("u").value.trim();
+    const password = document.getElementById("p").value;
+    document.getElementById("lMsg").textContent = "";
+    try{
+      await api("/api/auth/login", {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({ username, password })
+      });
+      await checkMe();
+    }catch(e){
+      document.getElementById("lMsg").textContent = e.message;
+    }
+  }
+
+  async function logout(){
+    await api("/api/auth/logout", { method:"POST" });
+    location.reload();
+  }
+
+  async function checkMe(){
+    const me = await api("/api/auth/me");
+    state.me = me.user;
+    if(state.me && ["admin","editor","author"].includes(state.me.role)){
+      document.getElementById("loginBox").classList.add("hidden");
+      document.getElementById("dash").classList.remove("hidden");
+      document.getElementById("logoutBtn").classList.remove("hidden");
+      setTopLinks();
+      await loadMine();
+      await loadFromQueryIfAny();
+    } else {
+      document.getElementById("loginBox").classList.remove("hidden");
+      document.getElementById("dash").classList.add("hidden");
+      document.getElementById("logoutBtn").classList.add("hidden");
+    }
+  }
+
+  async function loadMine(){
+    const data = await api("/api/editor/my-articles");
+    state.mine = data.items || [];
+    renderMine();
+  }
+
+  function renderMine(){
+    const q = document.getElementById("mineQ").value.trim().toLowerCase();
+    const st = document.getElementById("mineFilter").value;
+
+    const list = state.mine
+      .filter(x => !st || x.status === st)
+      .filter(x => !q || String(x.title||"").toLowerCase().includes(q));
+
+    const box = document.getElementById("mineList");
+    box.innerHTML = list.map(a => `
+      <button class="w-full text-left rounded-2xl bg-black/45 border border-white/10 p-3 hover:bg-white/10 transition"
+        data-id="${esc(a._id||"")}"
+        >
+        <div class="flex items-center justify-between gap-3">
+          <div class="font-semibold text-slate-100 line-clamp-1">${esc(a.title||"Untitled")}</div>
+          <div class="text-xs text-slate-300/70">${esc(a.status||"")}</div>
+        </div>
+        <div class="mt-1 text-xs text-slate-300/70 flex flex-wrap gap-3">
+          <span><i class="bi bi-eye"></i> ${new Intl.NumberFormat().format(a.views||0)}</span>
+          <span><i class="bi bi-heart"></i> ${new Intl.NumberFormat().format(a.likes||0)}</span>
+          <span><i class="bi bi-chat-dots"></i> ${new Intl.NumberFormat().format(a.commentsCount||0)}</span>
+          <span class="ml-auto">${a.updatedAt ? new Date(a.updatedAt).toLocaleString() : ""}</span>
+        </div>
+      </button>
+    `).join("") || `<div class="text-sm muted2">No items. Click “New” to create draft.</div>`;
+
+    [...box.querySelectorAll("button[data-id]")].forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const id = btn.getAttribute("data-id");
+        await loadById(id);
+      });
+    });
+  }
+
+  async function loadById(id){
+    toast("Loading article...");
+    const data = await api("/api/editor/articles/" + encodeURIComponent(id));
+    const a = data.item;
+
+    state.articleId = a._id;
+    state.slug = a.slug || "";
+    state.status = a.status || "";
+    fillForm(a);
+    setArticleMeta();
+
+    history.replaceState(null, "", "/editor.html?id=" + encodeURIComponent(state.articleId));
+    toast("Loaded.");
+  }
+
+  async function loadFromQueryIfAny(){
+    const p = new URLSearchParams(location.search);
+    const id = p.get("id");
+    if(id){
+      await loadById(id);
+      return;
+    }
+    newArticle();
+  }
+
+  function newArticle(){
+    state.articleId = "";
+    state.slug = "";
+    state.status = "draft";
+    state.coverUrl = "";
+    state.coverPublicId = "";
+    setArticleMeta();
+    fillForm({ category:"General" });
+    history.replaceState(null, "", "/editor.html");
+    toast("New draft.");
+  }
+
+  async function saveDraft(){
+    document.getElementById("saveState").textContent = "Saving...";
+    toast("");
+    try{
+      const payload = getPayload();
+      const data = await api("/api/editor/articles/upsert", {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify(payload)
+      });
+      state.articleId = data.id;
+      state.slug = data.slug || state.slug;
+      state.status = state.status || "draft";
+      setArticleMeta();
+      await loadMine();
+      document.getElementById("saveState").textContent = "Saved.";
+      toast("Draft saved.");
+      history.replaceState(null, "", "/editor.html?id=" + encodeURIComponent(state.articleId));
+    }catch(e){
+      document.getElementById("saveState").textContent = "Save failed.";
+      toast(e.message);
+    }
+  }
+
+  async function publishNow(){
+    if(!state.articleId){
+      await saveDraft();
+      if(!state.articleId) return;
+    }
+    toast("Publishing...");
+    await api("/api/editor/articles/" + encodeURIComponent(state.articleId) + "/publish", { method:"POST" });
+    state.status = "published";
+    setArticleMeta();
+    await loadMine();
+    toast("Published.");
+  }
+
+  async function schedule(){
+    if(!state.articleId){
+      await saveDraft();
+      if(!state.articleId) return;
+    }
+    const v = document.getElementById("scheduleAt").value;
+    if(!v){
+      toast("Select datetime-local first.");
+      return;
+    }
+    const dt = new Date(v);
+    if(isNaN(dt.getTime())){
+      toast("Invalid datetime.");
+      return;
+    }
+    toast("Scheduling...");
+    await api("/api/editor/articles/" + encodeURIComponent(state.articleId) + "/schedule", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ publishedAt: dt.toISOString() })
+    });
+    state.status = "scheduled";
+    setArticleMeta();
+    await loadMine();
+    toast("Scheduled.");
+  }
+
+  async function uploadCover(){
+    const f = document.getElementById("coverFile").files?.[0];
+    const msg = document.getElementById("coverMsg");
+    msg.textContent = "";
+    if(!f){ msg.textContent = "Choose an image first."; return; }
+
+    const fd = new FormData();
+    fd.append("file", f);
+
+    try{
+      msg.textContent = "Uploading...";
+      const r = await fetch("/api/upload", { method:"POST", body: fd, credentials:"include" });
+      const j = await r.json().catch(()=> ({}));
+      if(!r.ok) throw new Error(j.error || "Upload failed");
+
+      state.coverUrl = j.url;
+      state.coverPublicId = j.publicId;
+      syncCoverPreview();
+      msg.textContent = "Uploaded.";
+      toast("Cover attached (remember to Save).");
+    }catch(e){
+      msg.textContent = e.message;
+    }
+  }
+
+  function copySeo(){
+    if(!state.slug){
+      toast("No slug yet. Save draft first.");
+      return;
+    }
+    const link = location.origin + "/a/" + state.slug;
+    navigator.clipboard.writeText(link).then(()=> toast("Copied."), ()=> prompt("Copy:", link));
+  }
+
+  async function previewSeo(){
+    if(!state.slug){
+      await saveDraft();
+      if(!state.slug) return;
+    }
+    window.open("/a/" + encodeURIComponent(state.slug), "_blank", "noopener");
+  }
+
+  // events
+  document.getElementById("loginBtn").addEventListener("click", login);
+  document.getElementById("logoutBtn").addEventListener("click", logout);
+
+  document.getElementById("newBtn").addEventListener("click", newArticle);
+  document.getElementById("saveBtn").addEventListener("click", saveDraft);
+  document.getElementById("saveBtn2").addEventListener("click", saveDraft);
+  document.getElementById("publishBtn").addEventListener("click", publishNow);
+  document.getElementById("publishBtn2").addEventListener("click", publishNow);
+
+  document.getElementById("scheduleBtn").addEventListener("click", schedule);
+  document.getElementById("scheduleApplyBtn").addEventListener("click", schedule);
+  document.getElementById("resetScheduleBtn").addEventListener("click", () => {
+    document.getElementById("scheduleAt").value = "";
+    toast("Schedule field cleared.");
+  });
+
+  document.getElementById("uploadCoverBtn").addEventListener("click", uploadCover);
+  document.getElementById("clearCoverBtn").addEventListener("click", () => {
+    state.coverUrl = "";
+    state.coverPublicId = "";
+    syncCoverPreview();
+    toast("Cover cleared (local). Save draft to apply.");
+  });
+
+  document.getElementById("reloadMine").addEventListener("click", loadMine);
+  document.getElementById("mineQ").addEventListener("input", renderMine);
+  document.getElementById("mineFilter").addEventListener("change", renderMine);
+
+  document.getElementById("previewBtn").addEventListener("click", previewSeo);
+  document.getElementById("copySeoBtn").addEventListener("click", copySeo);
+
+  // init
+  checkMe().catch(e => {
+    document.getElementById("lMsg").textContent = e.message || "Init failed";
+  });
+</script>
+</body>
+</html>

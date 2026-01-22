@@ -1,0 +1,386 @@
+<!-- public/profile.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Profile — NEWS.ULTRA</title>
+  <meta name="description" content="Author profile, stats, follow, and edit your own profile."/>
+  <link rel="canonical" href="/profile.html"/>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <style>
+    :root { color-scheme: dark; }
+    .glass{ background: rgba(0,0,0,.72); backdrop-filter: blur(14px); }
+    .card { background: rgba(0,0,0,.48); border: 1px solid rgba(255,255,255,.10); }
+    .card2{ background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); }
+    .btn  { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); }
+    .btn:hover { background: rgba(255,255,255,.10); }
+    .btnp { background: rgba(56,189,248,.18); border: 1px solid rgba(56,189,248,.28); }
+    .btnp:hover { background: rgba(56,189,248,.28); }
+    .btnr { background: rgba(244,63,94,.18); border: 1px solid rgba(244,63,94,.28); }
+    .btnr:hover { background: rgba(244,63,94,.28); }
+    .muted{ color: rgba(226,232,240,.70); }
+    .line2{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .line3{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+  </style>
+</head>
+
+<body class="bg-slate-950 text-slate-100">
+
+<header class="sticky top-0 z-50 border-b border-white/10 glass">
+  <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
+    <a href="/" class="font-extrabold text-xl tracking-tight">NEWS<span class="text-sky-400">.ULTRA</span></a>
+    <nav class="flex items-center gap-2 text-sm text-slate-300">
+      <a class="px-3 py-2 rounded-xl hover:bg-white/10" href="/articles.html"><i class="bi bi-grid-1x2"></i> Articles</a>
+      <a id="editorBtn" class="px-3 py-2 rounded-xl hover:bg-white/10 hidden" href="/editor.html"><i class="bi bi-pencil-square"></i> Editor</a>
+      <a id="adminBtn" class="px-3 py-2 rounded-xl hover:bg-white/10 hidden" href="/admin.html"><i class="bi bi-shield-lock"></i> Admin</a>
+      <button id="logoutBtn" class="px-3 py-2 rounded-xl hover:bg-white/10 hidden"><i class="bi bi-box-arrow-right"></i> Logout</button>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-8">
+
+  <div id="state" class="card rounded-3xl p-6 text-slate-300">Loading...</div>
+
+  <!-- PUBLIC AUTHOR PROFILE VIEW -->
+  <section id="publicWrap" class="hidden">
+    <div class="card rounded-3xl p-6 md:p-8">
+      <div class="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
+        <div class="flex items-center gap-4">
+          <img id="pubAvatar" class="w-20 h-20 rounded-3xl object-cover border border-white/10"
+               src="https://dummyimage.com/160x160/0b1220/ffffff&text=A" alt="avatar">
+          <div>
+            <div class="text-xs muted">@<span id="pubUsername"></span></div>
+            <div class="text-2xl md:text-3xl font-black" id="pubName"></div>
+            <div class="mt-2 muted text-sm" id="pubBio"></div>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2 items-center">
+          <button id="followBtn" class="px-5 py-3 rounded-2xl btnp text-sm"><i class="bi bi-bell"></i> Follow</button>
+          <a id="openAuthorRss" class="px-5 py-3 rounded-2xl btn text-sm" href="/rss.xml"><i class="bi bi-rss"></i> RSS</a>
+        </div>
+      </div>
+
+      <div class="mt-6 grid md:grid-cols-3 gap-4">
+        <div class="card2 rounded-3xl p-5">
+          <div class="text-xs muted">Total posts</div>
+          <div class="mt-1 text-2xl font-black" id="statPosts">0</div>
+        </div>
+        <div class="card2 rounded-3xl p-5">
+          <div class="text-xs muted">Total views</div>
+          <div class="mt-1 text-2xl font-black" id="statViews">0</div>
+        </div>
+        <div class="card2 rounded-3xl p-5">
+          <div class="text-xs muted">Total likes</div>
+          <div class="mt-1 text-2xl font-black" id="statLikes">0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-6 card rounded-3xl p-6">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 class="text-xl font-extrabold">Articles by this author</h2>
+        <div class="flex gap-2">
+          <select id="pubSort" class="rounded-2xl bg-white/5 border border-white/10 px-4 py-2 text-sm outline-none">
+            <option value="latest">latest</option>
+            <option value="views">top viewed</option>
+            <option value="likes">top liked</option>
+            <option value="comments">top commented</option>
+          </select>
+          <button id="pubReload" class="px-4 py-2 rounded-2xl btn text-sm">Reload</button>
+        </div>
+      </div>
+
+      <div id="pubGrid" class="mt-5 grid md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+    </div>
+  </section>
+
+  <!-- MY PROFILE (EDIT) -->
+  <section id="meWrap" class="hidden">
+    <div class="card rounded-3xl p-6 md:p-8">
+      <div class="flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between">
+        <div class="flex items-center gap-4">
+          <img id="meAvatar" class="w-20 h-20 rounded-3xl object-cover border border-white/10"
+               src="https://dummyimage.com/160x160/0b1220/ffffff&text=ME" alt="avatar">
+          <div>
+            <div class="text-xs muted">Signed in as @<span id="meUsername"></span></div>
+            <div class="text-2xl md:text-3xl font-black" id="meFullname"></div>
+            <div class="mt-2 muted text-sm">Edit your profile details and save.</div>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2 items-center">
+          <label class="px-5 py-3 rounded-2xl btn text-sm cursor-pointer">
+            <i class="bi bi-image"></i> Upload avatar
+            <input id="avatarFile" type="file" accept="image/*" class="hidden">
+          </label>
+          <button id="saveBtn" class="px-5 py-3 rounded-2xl btnp text-sm"><i class="bi bi-check2-circle"></i> Save</button>
+        </div>
+      </div>
+
+      <div class="mt-6 grid lg:grid-cols-2 gap-4">
+        <div class="card2 rounded-3xl p-5">
+          <div class="text-sm font-extrabold">Profile info</div>
+          <div class="mt-4 grid sm:grid-cols-2 gap-3">
+            <div>
+              <div class="text-xs muted">First name</div>
+              <input id="firstName" class="mt-1 w-full rounded-2xl bg-white/5 border border-white/10 px-3 py-2 text-sm outline-none" placeholder="First name">
+            </div>
+            <div>
+              <div class="text-xs muted">Last name</div>
+              <input id="lastName" class="mt-1 w-full rounded-2xl bg-white/5 border border-white/10 px-3 py-2 text-sm outline-none" placeholder="Last name">
+            </div>
+            <div>
+              <div class="text-xs muted">Email</div>
+              <input id="email" class="mt-1 w-full rounded-2xl bg-white/5 border border-white/10 px-3 py-2 text-sm outline-none" placeholder="email@example.com">
+            </div>
+            <div>
+              <div class="text-xs muted">Phone</div>
+              <input id="phone" class="mt-1 w-full rounded-2xl bg-white/5 border border-white/10 px-3 py-2 text-sm outline-none" placeholder="+998...">
+            </div>
+          </div>
+          <div class="mt-4">
+            <div class="text-xs muted">Bio</div>
+            <textarea id="bio" class="mt-1 w-full rounded-2xl bg-white/5 border border-white/10 px-3 py-2 text-sm outline-none min-h-[120px]" placeholder="Short bio..."></textarea>
+          </div>
+          <div id="saveMsg" class="mt-3 text-xs muted"></div>
+        </div>
+
+        <div class="card2 rounded-3xl p-5">
+          <div class="flex items-center justify-between">
+            <div class="text-sm font-extrabold">My public profile link</div>
+            <a id="myPublicLink" class="text-sm text-sky-300 hover:underline" href="#" target="_blank" rel="noopener">Open</a>
+          </div>
+          <div class="mt-3 text-sm muted">
+            Your articles will show your author name and link to your public profile.
+          </div>
+
+          <div class="mt-5 flex flex-wrap gap-2">
+            <a class="px-4 py-2 rounded-2xl btn text-sm" href="/editor.html"><i class="bi bi-pencil-square"></i> Go to editor</a>
+            <button id="logoutBtn2" class="px-4 py-2 rounded-2xl btnr text-sm"><i class="bi bi-box-arrow-right"></i> Logout</button>
+          </div>
+
+          <div class="mt-6 border-t border-white/10 pt-5">
+            <div class="text-sm font-extrabold">Notifications</div>
+            <div class="mt-2 text-sm muted">
+              Browser notifications require HTTPS in production. Follow feature works for guests; push notifications can be added later.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="border-t border-white/10 py-10">
+  <div class="max-w-7xl mx-auto px-4 text-sm text-slate-400 flex flex-wrap items-center justify-between gap-3">
+    <div>© <span id="y"></span> NEWS.ULTRA</div>
+    <div class="flex items-center gap-4">
+      <a class="hover:underline" href="/about.html">About</a>
+      <a class="hover:underline" href="/contact.html">Contact</a>
+      <a class="hover:underline" href="/privacy.html">Privacy</a>
+      <a class="hover:underline" href="/terms.html">Terms</a>
+      <a class="hover:underline" href="/sitemap.xml">Sitemap</a>
+      <a class="hover:underline" href="/rss.xml">RSS</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById("y").textContent = new Date().getFullYear();
+
+  function fmt(n){ return new Intl.NumberFormat().format(n||0); }
+  function esc(s){ return String(s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+  function qs(){ return new URLSearchParams(location.search); }
+
+  async function api(url, opts){
+    const r = await fetch(url, Object.assign({ credentials:"include" }, opts || {}));
+    const j = await r.json().catch(()=> ({}));
+    if(!r.ok) throw new Error(j.error || "Request failed");
+    return j;
+  }
+
+  function articleCard(a){
+    const cover = a.coverUrl ? `<img class="w-full h-36 object-cover rounded-2xl border border-white/10" src="${a.coverUrl}" alt="cover">` : "";
+    return `
+      <div class="card2 rounded-3xl p-4">
+        <div class="text-xs text-slate-400 flex flex-wrap gap-2 items-center">
+          <span class="px-2 py-1 rounded bg-white/5 border border-white/10">${esc(a.category||"General")}</span>
+          ${a.subcategory ? `<span class="px-2 py-1 rounded bg-white/5 border border-white/10">${esc(a.subcategory)}</span>` : ""}
+          <span class="ml-auto">${a.publishedAt ? new Date(a.publishedAt).toLocaleDateString() : ""}</span>
+        </div>
+
+        <h3 class="mt-3 font-extrabold line2">${esc(a.title||"")}</h3>
+        <p class="mt-2 text-sm muted line3">${esc(a.excerpt||"")}</p>
+        <div class="mt-3">${cover}</div>
+
+        <div class="mt-3 text-xs text-slate-400 flex items-center gap-4">
+          <span><i class="bi bi-eye"></i> ${fmt(a.views)}</span>
+          <span><i class="bi bi-heart"></i> ${fmt(a.likes)}</span>
+          <span><i class="bi bi-chat-dots"></i> ${fmt(a.commentsCount)}</span>
+        </div>
+
+        <div class="mt-4 flex flex-wrap gap-2">
+          <a class="px-4 py-2 rounded-xl btnp text-sm" href="/article.html?slug=${encodeURIComponent(a.slug)}">Open</a>
+          <a class="px-4 py-2 rounded-xl btn text-sm" href="/a/${encodeURIComponent(a.slug)}" target="_blank" rel="noopener">SEO</a>
+        </div>
+      </div>
+    `;
+  }
+
+  async function init(){
+    const u = qs().get("u"); // public author username
+    const stateEl = document.getElementById("state");
+
+    // Auth state
+    let me = null;
+    try{
+      const m = await api("/api/auth/me");
+      me = m.user || null;
+      if(me){
+        document.getElementById("logoutBtn").classList.remove("hidden");
+        document.getElementById("logoutBtn2").classList.remove("hidden");
+        if(me.role === "admin") document.getElementById("adminBtn").classList.remove("hidden");
+        if(me.role === "admin" || me.role === "editor" || me.role === "author") document.getElementById("editorBtn").classList.remove("hidden");
+      }
+    }catch{}
+
+    // If public profile (?u=)
+    if(u){
+      stateEl.classList.add("hidden");
+      document.getElementById("publicWrap").classList.remove("hidden");
+
+      const data = await api("/api/authors/" + encodeURIComponent(u));
+      const a = data.author;
+
+      document.getElementById("pubUsername").textContent = a.username;
+      document.getElementById("pubName").textContent = (a.firstName || a.lastName) ? `${a.firstName} ${a.lastName}`.trim() : (a.username || "Author");
+      document.getElementById("pubBio").textContent = a.bio || "No bio yet.";
+      document.getElementById("pubAvatar").src = a.avatarUrl || "https://dummyimage.com/160x160/0b1220/ffffff&text=A";
+
+      document.getElementById("statPosts").textContent = fmt(a.stats?.posts || 0);
+      document.getElementById("statViews").textContent = fmt(a.stats?.views || 0);
+      document.getElementById("statLikes").textContent = fmt(a.stats?.likes || 0);
+
+      const followBtn = document.getElementById("followBtn");
+      function setFollow(f){
+        followBtn.innerHTML = f ? `<i class="bi bi-bell-fill"></i> Following` : `<i class="bi bi-bell"></i> Follow`;
+        followBtn.className = `px-5 py-3 rounded-2xl text-sm ${f ? "btn" : "btnp"}`;
+      }
+      setFollow(!!data.isFollowing);
+
+      followBtn.onclick = async () => {
+        const r = await api("/api/authors/" + encodeURIComponent(a.id) + "/follow", { method:"POST" });
+        setFollow(!!r.following);
+      };
+
+      async function loadAuthorArticles(){
+        const sort = document.getElementById("pubSort").value;
+        const list = await api(`/api/authors/${encodeURIComponent(u)}/articles?sort=${encodeURIComponent(sort)}`);
+        document.getElementById("pubGrid").innerHTML = (list.items||[]).map(articleCard).join("") || `<div class="text-sm muted">No published articles.</div>`;
+      }
+      document.getElementById("pubReload").onclick = loadAuthorArticles;
+      document.getElementById("pubSort").onchange = loadAuthorArticles;
+      await loadAuthorArticles();
+
+      return;
+    }
+
+    // Otherwise: my profile (edit)
+    if(!me){
+      stateEl.textContent = "You are not logged in. Login from admin/editor pages, then return here.";
+      return;
+    }
+
+    stateEl.classList.add("hidden");
+    document.getElementById("meWrap").classList.remove("hidden");
+
+    document.getElementById("meUsername").textContent = me.username || "";
+    document.getElementById("meFullname").textContent = ((me.firstName || me.lastName) ? `${me.firstName||""} ${me.lastName||""}` : me.username).trim();
+
+    document.getElementById("firstName").value = me.firstName || "";
+    document.getElementById("lastName").value = me.lastName || "";
+    document.getElementById("email").value = me.email || "";
+    document.getElementById("phone").value = me.phone || "";
+    document.getElementById("bio").value = me.bio || "";
+    document.getElementById("meAvatar").src = me.avatarUrl || "https://dummyimage.com/160x160/0b1220/ffffff&text=ME";
+
+    const pubLink = "/profile.html?u=" + encodeURIComponent(me.username || "");
+    const a = document.getElementById("myPublicLink");
+    a.href = pubLink;
+    a.textContent = pubLink;
+
+    document.getElementById("saveBtn").onclick = async () => {
+      const payload = {
+        firstName: document.getElementById("firstName").value.trim(),
+        lastName: document.getElementById("lastName").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        bio: document.getElementById("bio").value.trim(),
+      };
+
+      const msg = document.getElementById("saveMsg");
+      msg.textContent = "Saving...";
+      try{
+        await api("/api/profile", {
+          method:"PATCH",
+          headers: { "Content-Type":"application/json" },
+          body: JSON.stringify(payload)
+        });
+        msg.textContent = "Saved.";
+      }catch(e){
+        msg.textContent = e.message || "Save failed";
+      }
+    };
+
+    // Avatar upload => /api/upload => /api/profile/avatar
+    document.getElementById("avatarFile").addEventListener("change", async (e) => {
+      const file = e.target.files?.[0];
+      if(!file) return;
+
+      const msg = document.getElementById("saveMsg");
+      msg.textContent = "Uploading avatar...";
+
+      try{
+        const fd = new FormData();
+        fd.append("file", file);
+
+        const up = await fetch("/api/upload", { method:"POST", body: fd, credentials:"include" });
+        const uj = await up.json().catch(()=> ({}));
+        if(!up.ok) throw new Error(uj.error || "Upload failed");
+
+        await api("/api/profile/avatar", {
+          method:"POST",
+          headers: { "Content-Type":"application/json" },
+          body: JSON.stringify({ avatarUrl: uj.url, avatarPublicId: uj.publicId })
+        });
+
+        document.getElementById("meAvatar").src = uj.url;
+        msg.textContent = "Avatar updated.";
+      }catch(err){
+        msg.textContent = err.message || "Avatar failed";
+      }finally{
+        e.target.value = "";
+      }
+    });
+  }
+
+  async function logout(){
+    try{ await api("/api/auth/logout", { method:"POST" }); }catch{}
+    location.href = "/";
+  }
+  document.getElementById("logoutBtn").onclick = logout;
+  document.getElementById("logoutBtn2").onclick = logout;
+
+  init().catch(e => {
+    document.getElementById("state").textContent = e.message || "Failed";
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!-- public/index.html -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>NEWS.ULTRA — Ultra Dark News Portal</title>
+  <meta name="description" content="Latest news, top viewed, top liked, top commented — NEWS.ULTRA."/>
+  <link rel="canonical" href="/"/>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+  <style>
+    :root { color-scheme: dark; }
+    .glass{ background: rgba(0,0,0,.72); backdrop-filter: blur(14px); }
+    .card { background: rgba(0,0,0,.48); border: 1px solid rgba(255,255,255,.10); }
+    .card2{ background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); }
+    .chip { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.10); }
+    .btn  { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); }
+    .btn:hover { background: rgba(255,255,255,.10); }
+    .btnp { background: rgba(56,189,248,.18); border: 1px solid rgba(56,189,248,.28); }
+    .btnp:hover { background: rgba(56,189,248,.28); }
+    .muted{ color: rgba(226,232,240,.70); }
+    .line2{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .line3{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+  </style>
+</head>
+
+<body class="bg-slate-950 text-slate-100">
+
+<header class="sticky top-0 z-50 border-b border-white/10 glass">
+  <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
+    <a href="/" class="font-extrabold text-xl tracking-tight">NEWS<span class="text-sky-400">.ULTRA</span></a>
+
+    <div class="flex-1 max-w-xl">
+      <div class="flex items-center gap-2">
+        <i class="bi bi-search text-slate-400"></i>
+        <input id="q"
+               class="w-full rounded-2xl bg-white/5 border border-white/10 px-4 py-2 text-sm outline-none"
+               placeholder="Search news..." />
+        <button id="goSearch" class="px-4 py-2 rounded-2xl btn text-sm">Search</button>
+      </div>
+    </div>
+
+    <nav class="flex items-center gap-2 text-sm text-slate-300">
+      <a class="px-3 py-2 rounded-xl hover:bg-white/10" href="/articles.html"><i class="bi bi-grid-1x2"></i> Articles</a>
+      <a id="meBtn" class="px-3 py-2 rounded-xl hover:bg-white/10" href="/profile.html"><i class="bi bi-person"></i> Profile</a>
+      <a id="adminBtn" class="px-3 py-2 rounded-xl hover:bg-white/10 hidden" href="/admin.html"><i class="bi bi-shield-lock"></i> Admin</a>
+      <a id="editorBtn" class="px-3 py-2 rounded-xl hover:bg-white/10 hidden" href="/editor.html"><i class="bi bi-pencil-square"></i> Editor</a>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 py-8">
+
+  <!-- HERO -->
+  <section class="card rounded-3xl p-6 md:p-8 overflow-hidden relative">
+    <div class="absolute inset-0 opacity-30 pointer-events-none"
+         style="background: radial-gradient(800px 400px at 20% 10%, rgba(56,189,248,.35), transparent 60%),
+                radial-gradient(800px 400px at 80% 60%, rgba(244,63,94,.20), transparent 60%);"></div>
+
+    <div class="relative flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
+      <div class="max-w-2xl">
+        <div class="inline-flex items-center gap-2 chip rounded-full px-3 py-1 text-xs text-slate-300">
+          <i class="bi bi-lightning-charge-fill text-sky-400"></i> Real-time feed • Guest likes/comments enabled
+        </div>
+        <h1 class="mt-4 text-3xl md:text-5xl font-black leading-tight">
+          Ultra dark, ultra fast news reading experience.
+        </h1>
+        <p class="mt-3 muted">
+          Latest, Top Viewed, Top Liked, Top Commented — all in one place. Each article has an SEO page for indexing.
+        </p>
+
+        <div class="mt-6 flex flex-wrap gap-2">
+          <a class="px-5 py-3 rounded-2xl btnp text-sm" href="/articles.html"><i class="bi bi-grid-1x2"></i> Browse all</a>
+          <a class="px-5 py-3 rounded-2xl btn text-sm" href="/rss.xml"><i class="bi bi-rss"></i> RSS</a>
+          <a class="px-5 py-3 rounded-2xl btn text-sm" href="/sitemap.xml"><i class="bi bi-diagram-3"></i> Sitemap</a>
+        </div>
+      </div>
+
+      <div class="w-full md:w-[420px] card2 rounded-3xl p-5">
+        <div class="flex items-center justify-between">
+          <div class="font-extrabold">Trending now</div>
+          <div class="text-xs text-slate-400">Top viewed</div>
+        </div>
+        <div id="trending" class="mt-4 space-y-3">
+          <div class="text-sm muted">Loading...</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTIONS -->
+  <div class="mt-8 grid lg:grid-cols-2 gap-6">
+    <section class="card rounded-3xl p-6">
+      <div class="flex items-center justify-between gap-3">
+        <h2 class="text-xl font-extrabold">Latest</h2>
+        <a class="text-sm text-sky-300 hover:underline" href="/articles.html?sort=latest">See all</a>
+      </div>
+      <div id="latest" class="mt-4 grid md:grid-cols-2 gap-4"></div>
+    </section>
+
+    <section class="card rounded-3xl p-6">
+      <div class="flex items-center justify-between gap-3">
+        <h2 class="text-xl font-extrabold">Top Liked</h2>
+        <a class="text-sm text-sky-300 hover:underline" href="/articles.html?sort=likes">See all</a>
+      </div>
+      <div id="topLiked" class="mt-4 grid md:grid-cols-2 gap-4"></div>
+    </section>
+
+    <section class="card rounded-3xl p-6">
+      <div class="flex items-center justify-between gap-3">
+        <h2 class="text-xl font-extrabold">Top Viewed</h2>
+        <a class="text-sm text-sky-300 hover:underline" href="/articles.html?sort=views">See all</a>
+      </div>
+      <div id="topViewed" class="mt-4 grid md:grid-cols-2 gap-4"></div>
+    </section>
+
+    <section class="card rounded-3xl p-6">
+      <div class="flex items-center justify-between gap-3">
+        <h2 class="text-xl font-extrabold">Top Commented</h2>
+        <a class="text-sm text-sky-300 hover:underline" href="/articles.html?sort=comments">See all</a>
+      </div>
+      <div id="topCommented" class="mt-4 grid md:grid-cols-2 gap-4"></div>
+    </section>
+  </div>
+
+</main>
+
+<footer class="border-t border-white/10 py-10">
+  <div class="max-w-7xl mx-auto px-4 text-sm text-slate-400 flex flex-wrap items-center justify-between gap-3">
+    <div>© <span id="y"></span> NEWS.ULTRA</div>
+    <div class="flex items-center gap-4">
+      <a class="hover:underline" href="/about.html">About</a>
+      <a class="hover:underline" href="/contact.html">Contact</a>
+      <a class="hover:underline" href="/editorial-policy.html">Editorial</a>
+      <a class="hover:underline" href="/corrections.html">Corrections</a>
+      <a class="hover:underline" href="/privacy.html">Privacy</a>
+      <a class="hover:underline" href="/terms.html">Terms</a>
+      <a class="hover:underline" href="/sitemap.xml">Sitemap</a>
+      <a class="hover:underline" href="/rss.xml">RSS</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById("y").textContent = new Date().getFullYear();
+
+  function fmt(n){ return new Intl.NumberFormat().format(n||0); }
+  function esc(s){ return String(s||"").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+
+  async function api(url, opts){
+    const r = await fetch(url, Object.assign({ credentials:"include" }, opts || {}));
+    const j = await r.json().catch(()=> ({}));
+    if(!r.ok) throw new Error(j.error || "Request failed");
+    return j;
+  }
+
+  function articleCard(a){
+    const cover = a.coverUrl ? `<img class="w-full h-36 object-cover rounded-2xl border border-white/10" src="${a.coverUrl}" alt="cover">` : "";
+    const authorHtml = a.authorUsername
+      ? `<a class="text-sky-300 hover:underline" href="/profile.html?u=${encodeURIComponent(a.authorUsername)}">${esc(a.authorName || a.authorUsername)}</a>`
+      : `<span>${esc(a.authorName || "Author")}</span>`;
+
+    return `
+      <div class="card2 rounded-3xl p-4 hover:shadow-[0_0_0_1px_rgba(56,189,248,.25)] transition">
+        <div class="text-xs text-slate-400 flex flex-wrap gap-2 items-center">
+          <span class="px-2 py-1 rounded bg-white/5 border border-white/10">${esc(a.category || "General")}</span>
+          ${a.subcategory ? `<span class="px-2 py-1 rounded bg-white/5 border border-white/10">${esc(a.subcategory)}</span>` : ""}
+          <span class="ml-auto">${a.publishedAt ? new Date(a.publishedAt).toLocaleDateString() : ""}</span>
+        </div>
+
+        <h3 class="mt-3 font-extrabold leading-snug line2">${esc(a.title || "")}</h3>
+
+        <div class="mt-2 text-sm text-slate-300">
+          <span class="text-slate-400">By</span> ${authorHtml}
+        </div>
+
+        <p class="mt-2 text-sm muted line3">${esc(a.excerpt || "")}</p>
+
+        <div class="mt-3">${cover}</div>
+
+        <div class="mt-3 text-xs text-slate-400 flex items-center gap-4">
+          <span><i class="bi bi-eye"></i> ${fmt(a.views)}</span>
+          <span><i class="bi bi-heart"></i> ${fmt(a.likes)}</span>
+          <span><i class="bi bi-chat-dots"></i> ${fmt(a.commentsCount)}</span>
+        </div>
+
+        <div class="mt-4 flex flex-wrap gap-2">
+          <a class="px-4 py-2 rounded-xl btnp text-sm" href="/article.html?slug=${encodeURIComponent(a.slug)}">Open</a>
+          <a class="px-4 py-2 rounded-xl btn text-sm" href="/a/${encodeURIComponent(a.slug)}" target="_blank" rel="noopener">SEO</a>
+        </div>
+      </div>
+    `;
+  }
+
+  function trendingRow(a){
+    const author = a.authorUsername
+      ? `<a class="text-sky-300 hover:underline" href="/profile.html?u=${encodeURIComponent(a.authorUsername)}">${esc(a.authorName || a.authorUsername)}</a>`
+      : `<span>${esc(a.authorName || "Author")}</span>`;
+    return `
+      <a class="block rounded-2xl p-3 hover:bg-white/5 border border-white/10" href="/article.html?slug=${encodeURIComponent(a.slug)}">
+        <div class="text-sm font-bold line2">${esc(a.title || "")}</div>
+        <div class="mt-1 text-xs text-slate-400 flex items-center justify-between gap-2">
+          <span>By ${author}</span>
+          <span><i class="bi bi-eye"></i> ${fmt(a.views)}</span>
+        </div>
+      </a>
+    `;
+  }
+
+  async function loadSection(elId, sort, limit){
+    const el = document.getElementById(elId);
+    el.innerHTML = `<div class="text-sm muted">Loading...</div>`;
+    const data = await api(`/api/articles?sort=${encodeURIComponent(sort)}&page=1&limit=${limit}`);
+    const items = data.items || [];
+    el.innerHTML = items.map(articleCard).join("") || `<div class="text-sm muted">No data.</div>`;
+  }
+
+  async function loadTrending(){
+    const box = document.getElementById("trending");
+    const data = await api(`/api/articles?sort=views&page=1&limit=6`);
+    const items = data.items || [];
+    box.innerHTML = items.map(trendingRow).join("") || `<div class="text-sm muted">No data.</div>`;
+  }
+
+  document.getElementById("goSearch").addEventListener("click", () => {
+    const q = document.getElementById("q").value.trim();
+    const p = new URLSearchParams();
+    p.set("sort","latest");
+    if(q) p.set("q", q);
+    location.href = "/articles.html?" + p.toString();
+  });
+
+  document.getElementById("q").addEventListener("keydown", (e) => {
+    if(e.key === "Enter") document.getElementById("goSearch").click();
+  });
+
+  async function initAuthButtons(){
+    try{
+      const me = await api("/api/auth/me");
+      const user = me.user;
+      if(user && (user.role === "admin")) document.getElementById("adminBtn").classList.remove("hidden");
+      if(user && (user.role === "admin" || user.role === "editor" || user.role === "author")) document.getElementById("editorBtn").classList.remove("hidden");
+      // My profile should open own profile edit section (profile.html without u param)
+      document.getElementById("meBtn").href = "/profile.html";
+    }catch{}
+  }
+
+  Promise.all([
+    initAuthButtons(),
+    loadTrending(),
+    loadSection("latest","latest",6),
+    loadSection("topLiked","likes",6),
+    loadSection("topViewed","views",6),
+    loadSection("topCommented","comments",6),
+  ]).catch(()=>{});
+</script>
+</body>
+</html>
