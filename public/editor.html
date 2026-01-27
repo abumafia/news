@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Editor — NEWS.ULTRA</title>
+  <title>Editor — Hallaym News</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -14,144 +14,116 @@
   <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
 
   <style>
-    /* =========================
-       ULTRA DARK (HIGH CONTRAST)
-       ========================= */
-    :root{
-      --bg0: #020617; /* slate-950 */
-      --bg1: rgba(0,0,0,0.70); /* glass */
-      --bg2: rgba(0,0,0,0.55); /* cards */
-      --bd1: rgba(255,255,255,0.10);
-      --bd2: rgba(255,255,255,0.14);
-      --txt: #e5e7eb;
-      --muted: rgba(226,232,240,0.72);
-      --muted2: rgba(226,232,240,0.55);
-      --shadow: 0 0 0 1px rgba(56,189,248,0.12), 0 20px 60px rgba(0,0,0,0.45);
-      --shadow2: 0 0 0 1px rgba(255,255,255,0.08), 0 20px 60px rgba(0,0,0,0.45);
-    }
-
-    html, body { height: 100%; }
-    body{
-      background: radial-gradient(1200px 600px at 20% -10%, rgba(56,189,248,0.10), transparent 60%),
-                  radial-gradient(1200px 600px at 100% 0%, rgba(244,63,94,0.07), transparent 55%),
-                  radial-gradient(800px 500px at 60% 120%, rgba(34,197,94,0.06), transparent 55%),
-                  var(--bg0);
-      color: var(--txt);
-    }
-
-    /* Glass / card */
-    .glass{
-      background: var(--bg1);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-    }
-    .card{
-      background: var(--bg2);
-      border: 1px solid var(--bd1);
-      box-shadow: var(--shadow2);
-    }
-
-    /* Buttons */
-    .btn{
-      border: 1px solid var(--bd2);
-      background: rgba(0,0,0,0.55);
-      color: rgba(226,232,240,0.92);
-      transition: 160ms ease;
-    }
-    .btn:hover{
-      background: rgba(255,255,255,0.08);
-      border-color: rgba(255,255,255,0.18);
-      box-shadow: var(--shadow);
-      transform: translateY(-1px);
-    }
-    .btn:active{ transform: translateY(0px); }
-
-    .danger{
-      border-color: rgba(244,63,94,0.35) !important;
-      background: rgba(244,63,94,0.12) !important;
-    }
-    .danger:hover{
-      background: rgba(244,63,94,0.18) !important;
-      border-color: rgba(244,63,94,0.50) !important;
-    }
-    .ok{
-      border-color: rgba(34,197,94,0.35) !important;
-      background: rgba(34,197,94,0.12) !important;
-    }
-    .ok:hover{
-      background: rgba(34,197,94,0.18) !important;
-      border-color: rgba(34,197,94,0.50) !important;
-    }
-
-    /* Inputs */
-    input, textarea, select{
-      color: rgba(226,232,240,0.95) !important;
-    }
-    input::placeholder, textarea::placeholder{
-      color: rgba(148,163,184,0.70);
-    }
-
-    /* Quill theme to ULTRA DARK */
-    .ql-toolbar.ql-snow{
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 16px 16px 0 0;
-      background: rgba(0,0,0,0.60);
-      box-shadow: var(--shadow2);
-    }
-    .ql-container.ql-snow{
-      border: 1px solid rgba(255,255,255,0.12);
-      border-top: 0;
-      border-radius: 0 0 16px 16px;
-      background: rgba(0,0,0,0.60);
-      color: rgba(226,232,240,0.95);
-      min-height: 380px;
-      box-shadow: var(--shadow2);
-    }
-    .ql-snow .ql-picker, .ql-snow .ql-picker-label{
-      color: rgba(226,232,240,0.92) !important;
-    }
-    .ql-snow .ql-stroke{ stroke: rgba(226,232,240,0.88) !important; }
-    .ql-snow .ql-fill{ fill: rgba(226,232,240,0.88) !important; }
-    .ql-snow .ql-picker-options{
-      background: rgba(2,6,23,0.98) !important;
-      border: 1px solid rgba(255,255,255,0.10) !important;
-    }
-    .ql-editor{
-      font-size: 16px;
-      line-height: 1.75;
-    }
-    .ql-editor a{ color: #38bdf8; text-decoration: underline; }
-    .ql-editor.ql-blank::before{
-      color: rgba(148,163,184,0.75) !important;
-    }
-
-    /* Minor */
-    .muted{ color: var(--muted); }
-    .muted2{ color: var(--muted2); }
-    .hairline{ border-color: rgba(255,255,255,0.10) !important; }
-  </style>
+  :root{
+    color-scheme: dark;
+    --bg0:#050c0e;
+    --bg1:#071316;
+    --card: rgba(10, 23, 26, 0.72);
+    --card2: rgba(255,255,255,0.06);
+    --bd: rgba(255,255,255,0.10);
+    --bd2: rgba(255,255,255,0.14);
+    --txt: rgba(226,232,240,0.95);
+    --muted: rgba(226,232,240,0.70);
+    --muted2: rgba(226,232,240,0.55);
+    --teal:#18c2b6;
+    --gold:#d8b04a;
+    --shadow: 0 0 0 1px rgba(24,194,182,0.10), 0 24px 60px rgba(0,0,0,0.55);
+  }
+  html, body{ height:100%; }
+  body{
+    background:
+      radial-gradient(900px 500px at 12% 0%, rgba(24,194,182,0.14), transparent 60%),
+      radial-gradient(900px 500px at 100% 20%, rgba(216,176,74,0.10), transparent 60%),
+      radial-gradient(800px 500px at 40% 120%, rgba(14,165,164,0.09), transparent 55%),
+      linear-gradient(180deg, var(--bg1), var(--bg0));
+    color: var(--txt);
+  }
+  .glass{
+    background: rgba(7,19,22,0.72);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--bd);
+  }
+  .card{ background: var(--card); border: 1px solid var(--bd); box-shadow: var(--shadow); }
+  .card2{ background: var(--card2); border: 1px solid var(--bd); }
+  .chip{ background: rgba(255,255,255,0.06); border: 1px solid var(--bd); }
+  .btn{ background: rgba(255,255,255,0.06); border: 1px solid var(--bd2); transition: 160ms ease; }
+  .btn:hover{ background: rgba(255,255,255,0.10); transform: translateY(-1px); }
+  .btn:active{ transform: translateY(0); }
+  .btnp{ background: rgba(24,194,182,0.18); border: 1px solid rgba(24,194,182,0.35); }
+  .btnp:hover{ background: rgba(24,194,182,0.26); }
+  .btng{ background: rgba(216,176,74,0.14); border: 1px solid rgba(216,176,74,0.32); }
+  .btng:hover{ background: rgba(216,176,74,0.22); }
+  .muted{ color: var(--muted); }
+  .muted2{ color: var(--muted2); }
+  .line2{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .line3{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+  .nav-drawer{ background: rgba(7,19,22,0.92); border: 1px solid var(--bd); box-shadow: var(--shadow); }
+  @media (max-width: 640px){ a, button, input, select, textarea{ -webkit-tap-highlight-color: transparent; } }
+</style>
 </head>
 
 <body class="text-slate-100">
-<header class="sticky top-0 z-50 border-b hairline glass">
-  <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-    <a href="/" class="font-extrabold text-xl tracking-tight">NEWS<span class="text-sky-400">.ULTRA</span></a>
-    <nav class="flex items-center gap-2 text-sm text-slate-300">
-      <a class="px-3 py-2 rounded-xl hover:bg-white/10" href="/"><i class="bi bi-house"></i> Home</a>
-      <a class="px-3 py-2 rounded-xl hover:bg-white/10" href="/articles.html"><i class="bi bi-grid-1x2"></i> Articles</a>
-      <a class="px-3 py-2 rounded-xl hover:bg-white/10" href="/admin.html"><i class="bi bi-shield-lock"></i> Admin</a>
-      <a id="profileLink" class="px-3 py-2 rounded-xl hover:bg-white/10 hidden" href="/profile.html"><i class="bi bi-person"></i> Profile</a>
-      <button id="logoutBtn" class="px-3 py-2 rounded-xl hover:bg-white/10 hidden"><i class="bi bi-box-arrow-right"></i> Logout</button>
+<header class="sticky top-0 z-50 glass">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
+    <a href="/" class="flex items-center gap-3 min-w-0">
+      <img src="/logo.jpg" alt="Hallaym News logo" class="w-9 h-9 rounded-2xl object-cover border border-white/10"/>
+      <div class="min-w-0">
+        <div class="font-extrabold text-base sm:text-lg leading-tight truncate">Hallaym News</div>
+        <div class="text-xs muted -mt-0.5 truncate">Tezkor xabarlar • Tahlillar • Dolzarb yangiliklar</div>
+      </div>
+    </a>
+
+
+
+    <div class="ml-auto flex items-center gap-2">
+      <button id="menuBtn" class="md:hidden px-3 py-2 rounded-xl btn" aria-label="Menu">
+        <i class="bi bi-list text-lg"></i>
+      </button>
+    </div>
+
+    <nav class="hidden md:flex items-center gap-2 text-sm text-slate-200">
+      <a class="px-3 py-2 rounded-xl hover:bg-white/10" href="/"><i class="bi bi-house"></i> Bosh sahifa</a>
+        <a class="px-3 py-2 rounded-xl hover:bg-white/10" href="/articles.html"><i class="bi bi-grid-1x2"></i> Yangiliklar</a>
+        <a class="px-3 py-2 rounded-xl hover:bg-white/10" href="/rss.xml"><i class="bi bi-rss"></i> RSS</a>
+        <a class="px-3 py-2 rounded-xl hover:bg-white/10" href="/sitemap.xml"><i class="bi bi-diagram-3"></i> Sitemap</a>
+      <a id="profileLink" class="px-3 py-2 rounded-xl hover:bg-white/10 hidden" href="/profile.html"><i class="bi bi-person"></i> Profil</a>
+        <button id="logoutBtn" class="px-3 py-2 rounded-xl hover:bg-white/10 hidden"><i class="bi bi-box-arrow-right"></i> Chiqish</button>
+        
     </nav>
   </div>
+
+  <div class="max-w-7xl mx-auto px-4 pb-3 md:hidden">
+    <div id="mobileMenu" class="hidden nav-drawer rounded-2xl p-3">
+      <div class="grid gap-2 text-sm text-slate-100">
+        <a class="px-3 py-2 rounded-xl hover:bg-white/10" href="/"><i class="bi bi-house"></i> Bosh sahifa</a>
+        <a class="px-3 py-2 rounded-xl hover:bg-white/10" href="/articles.html"><i class="bi bi-grid-1x2"></i> Yangiliklar</a>
+        <a class="px-3 py-2 rounded-xl hover:bg-white/10" href="/rss.xml"><i class="bi bi-rss"></i> RSS</a>
+        <a class="px-3 py-2 rounded-xl hover:bg-white/10" href="/sitemap.xml"><i class="bi bi-diagram-3"></i> Sitemap</a>
+        <a id="profileLink" class="px-3 py-2 rounded-xl hover:bg-white/10 hidden" href="/profile.html"><i class="bi bi-person"></i> Profil</a>
+        <button id="logoutBtn" class="px-3 py-2 rounded-xl hover:bg-white/10 hidden"><i class="bi bi-box-arrow-right"></i> Chiqish</button>
+        
+      </div>
+      
+    </div>
+  </div>
 </header>
+
+<script>
+  (function(){
+    const btn = document.getElementById("menuBtn");
+    const menu = document.getElementById("mobileMenu");
+    if(!btn || !menu) return;
+    btn.addEventListener("click", () => menu.classList.toggle("hidden"));
+  })();
+</script>
 
 <main class="max-w-7xl mx-auto px-4 py-8">
   <!-- Login -->
   <section id="loginBox" class="max-w-xl mx-auto card rounded-3xl p-6">
     <div class="flex items-start justify-between gap-4">
       <div>
-        <h1 class="text-2xl font-black">Editor Login</h1>
+        <h1 class="text-2xl font-black">Editor kirish</h1>
         <p class="mt-1 text-sm muted">Author / Editor / Admin kiradi. Maqola yaratish va publish qilish shu yerda.</p>
       </div>
       <div class="text-xs muted">
@@ -165,7 +137,7 @@
     <div class="mt-6 grid gap-3">
       <input id="u" class="w-full rounded-2xl bg-black/50 border hairline px-4 py-3 outline-none" placeholder="username"/>
       <input id="p" type="password" class="w-full rounded-2xl bg-black/50 border hairline px-4 py-3 outline-none" placeholder="password"/>
-      <button id="loginBtn" class="w-full px-5 py-3 rounded-2xl bg-sky-500/20 border border-sky-400/30 hover:bg-sky-500/30">
+      <button id="loginBtn" class="w-full px-5 py-3 rounded-2xl bg-sky-500/20 border border-emerald-300/30 hover:bg-sky-500/30">
         Login
       </button>
       <div id="lMsg" class="text-xs muted2"></div>
@@ -176,17 +148,17 @@
   <section id="dash" class="hidden">
     <div class="flex flex-wrap items-end justify-between gap-4">
       <div>
-        <h1 class="text-3xl font-black">Editor Workspace</h1>
+        <h1 class="text-3xl font-black">Maqola tahrirlash</h1>
         <p class="text-sm muted">
-          Draft saqlash, cover upload (Cloudinary), embed linklar (YouTube/Instagram/Telegram), Publish/Schedule.
+          Draft saqlash, cover upload (Cloudinary), embed linklar (YouTube/Instagram/Telegram), Publish/Rejalashtirish.
         </p>
       </div>
 
       <div class="flex flex-wrap gap-2">
         <button id="newBtn" class="px-4 py-2 rounded-2xl btn"><i class="bi bi-plus-circle"></i> New</button>
-        <button id="saveBtn" class="px-4 py-2 rounded-2xl btn"><i class="bi bi-save2"></i> Save draft</button>
-        <button id="publishBtn" class="px-4 py-2 rounded-2xl btn ok"><i class="bi bi-broadcast"></i> Publish now</button>
-        <button id="scheduleBtn" class="px-4 py-2 rounded-2xl btn"><i class="bi bi-calendar2-event"></i> Schedule</button>
+        <button id="saveBtn" class="px-4 py-2 rounded-2xl btn"><i class="bi bi-save2"></i> Qoralama saqlash</button>
+        <button id="publishBtn" class="px-4 py-2 rounded-2xl btn ok"><i class="bi bi-broadcast"></i> Hozir nashr qilish</button>
+        <button id="scheduleBtn" class="px-4 py-2 rounded-2xl btn"><i class="bi bi-calendar2-event"></i> Rejalashtirish</button>
         <a id="openSeoBtn" class="px-4 py-2 rounded-2xl btn hidden" target="_blank" rel="noopener"><i class="bi bi-globe2"></i> SEO</a>
         <a id="openUiBtn" class="px-4 py-2 rounded-2xl btn hidden" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right"></i> UI</a>
       </div>
@@ -198,7 +170,7 @@
         <div class="card rounded-3xl p-5">
           <div class="flex items-center justify-between">
             <h3 class="font-extrabold text-lg">My Articles</h3>
-            <button id="reloadMine" class="text-sm text-sky-400 hover:underline">Reload</button>
+            <button id="reloadMine" class="text-sm text-emerald-300 hover:underline">Reload</button>
           </div>
 
           <div class="mt-3 flex items-center gap-2">
@@ -302,18 +274,18 @@
                 <div class="mt-2 grid md:grid-cols-3 gap-2">
                   <input id="scheduleAt" type="datetime-local" class="rounded-2xl bg-black/60 border hairline px-4 py-3 outline-none"/>
                   <button id="scheduleApplyBtn" class="px-4 py-2 rounded-2xl btn"><i class="bi bi-clock"></i> Apply schedule</button>
-                  <button id="resetScheduleBtn" class="px-4 py-2 rounded-2xl btn danger"><i class="bi bi-x-circle"></i> Reset schedule field</button>
+                  <button id="resetRejalashtirishBtn" class="px-4 py-2 rounded-2xl btn danger"><i class="bi bi-x-circle"></i> Reset schedule field</button>
                 </div>
                 <div class="mt-2 text-xs muted2">
-                  Schedule: vaqt tanlang → Apply schedule (server schedule endpointga yuboradi).
+                  Rejalashtirish: vaqt tanlang → Apply schedule (server schedule endpointga yuboradi).
                 </div>
               </div>
             </div>
           </div>
 
           <div class="mt-6 flex flex-wrap gap-2">
-            <button id="saveBtn2" class="px-4 py-2 rounded-2xl btn"><i class="bi bi-save2"></i> Save draft</button>
-            <button id="publishBtn2" class="px-4 py-2 rounded-2xl btn ok"><i class="bi bi-broadcast"></i> Publish now</button>
+            <button id="saveBtn2" class="px-4 py-2 rounded-2xl btn"><i class="bi bi-save2"></i> Qoralama saqlash</button>
+            <button id="publishBtn2" class="px-4 py-2 rounded-2xl btn ok"><i class="bi bi-broadcast"></i> Hozir nashr qilish</button>
             <button id="previewBtn" class="px-4 py-2 rounded-2xl btn"><i class="bi bi-eye"></i> Preview SEO</button>
             <button id="copySeoBtn" class="px-4 py-2 rounded-2xl btn"><i class="bi bi-clipboard"></i> Copy SEO link</button>
             <div id="msg" class="ml-auto text-xs muted2"></div>
@@ -611,7 +583,7 @@
     state.status = "scheduled";
     setArticleMeta();
     await loadMine();
-    toast("Scheduled.");
+    toast("Rejalashtirishd.");
   }
 
   async function uploadCover(){
@@ -641,7 +613,7 @@
 
   function copySeo(){
     if(!state.slug){
-      toast("No slug yet. Save draft first.");
+      toast("No slug yet. Qoralama saqlash first.");
       return;
     }
     const link = location.origin + "/a/" + state.slug;
@@ -668,9 +640,9 @@
 
   document.getElementById("scheduleBtn").addEventListener("click", schedule);
   document.getElementById("scheduleApplyBtn").addEventListener("click", schedule);
-  document.getElementById("resetScheduleBtn").addEventListener("click", () => {
+  document.getElementById("resetRejalashtirishBtn").addEventListener("click", () => {
     document.getElementById("scheduleAt").value = "";
-    toast("Schedule field cleared.");
+    toast("Rejalashtirish field cleared.");
   });
 
   document.getElementById("uploadCoverBtn").addEventListener("click", uploadCover);
@@ -678,7 +650,7 @@
     state.coverUrl = "";
     state.coverPublicId = "";
     syncCoverPreview();
-    toast("Cover cleared (local). Save draft to apply.");
+    toast("Cover cleared (local). Qoralama saqlash to apply.");
   });
 
   document.getElementById("reloadMine").addEventListener("click", loadMine);

@@ -4,8 +4,8 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>NEWS.ULTRA — Ultra Dark News Portal</title>
-  <meta name="description" content="Latest news, top viewed, top liked, top commented — NEWS.ULTRA."/>
+  <title>Hallaym News — Yangiliklar portali</title>
+  <meta name="description" content="Oʻzbekiston va dunyodagi tezkor yangiliklar, tahlillar va dolzarb xabarlar."/>
   <link rel="canonical" href="/"/>
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -13,45 +13,126 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
   <style>
-    :root { color-scheme: dark; }
-    .glass{ background: rgba(0,0,0,.72); backdrop-filter: blur(14px); }
-    .card { background: rgba(0,0,0,.48); border: 1px solid rgba(255,255,255,.10); }
-    .card2{ background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); }
-    .chip { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.10); }
-    .btn  { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); }
-    .btn:hover { background: rgba(255,255,255,.10); }
-    .btnp { background: rgba(56,189,248,.18); border: 1px solid rgba(56,189,248,.28); }
-    .btnp:hover { background: rgba(56,189,248,.28); }
-    .muted{ color: rgba(226,232,240,.70); }
-    .line2{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-    .line3{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
-  </style>
+  :root{
+    color-scheme: dark;
+    --bg0:#050c0e;
+    --bg1:#071316;
+    --card: rgba(10, 23, 26, 0.72);
+    --card2: rgba(255,255,255,0.06);
+    --bd: rgba(255,255,255,0.10);
+    --bd2: rgba(255,255,255,0.14);
+    --txt: rgba(226,232,240,0.95);
+    --muted: rgba(226,232,240,0.70);
+    --muted2: rgba(226,232,240,0.55);
+    --teal:#18c2b6;
+    --gold:#d8b04a;
+    --shadow: 0 0 0 1px rgba(24,194,182,0.10), 0 24px 60px rgba(0,0,0,0.55);
+  }
+  html, body{ height:100%; }
+  body{
+    background:
+      radial-gradient(900px 500px at 12% 0%, rgba(24,194,182,0.14), transparent 60%),
+      radial-gradient(900px 500px at 100% 20%, rgba(216,176,74,0.10), transparent 60%),
+      radial-gradient(800px 500px at 40% 120%, rgba(14,165,164,0.09), transparent 55%),
+      linear-gradient(180deg, var(--bg1), var(--bg0));
+    color: var(--txt);
+  }
+  .glass{
+    background: rgba(7,19,22,0.72);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--bd);
+  }
+  .card{ background: var(--card); border: 1px solid var(--bd); box-shadow: var(--shadow); }
+  .card2{ background: var(--card2); border: 1px solid var(--bd); }
+  .chip{ background: rgba(255,255,255,0.06); border: 1px solid var(--bd); }
+  .btn{ background: rgba(255,255,255,0.06); border: 1px solid var(--bd2); transition: 160ms ease; }
+  .btn:hover{ background: rgba(255,255,255,0.10); transform: translateY(-1px); }
+  .btn:active{ transform: translateY(0); }
+  .btnp{ background: rgba(24,194,182,0.18); border: 1px solid rgba(24,194,182,0.35); }
+  .btnp:hover{ background: rgba(24,194,182,0.26); }
+  .btng{ background: rgba(216,176,74,0.14); border: 1px solid rgba(216,176,74,0.32); }
+  .btng:hover{ background: rgba(216,176,74,0.22); }
+  .muted{ color: var(--muted); }
+  .muted2{ color: var(--muted2); }
+  .line2{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .line3{ display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+  .nav-drawer{ background: rgba(7,19,22,0.92); border: 1px solid var(--bd); box-shadow: var(--shadow); }
+  @media (max-width: 640px){ a, button, input, select, textarea{ -webkit-tap-highlight-color: transparent; } }
+</style>
 </head>
 
 <body class="bg-slate-950 text-slate-100">
 
-<header class="sticky top-0 z-50 border-b border-white/10 glass">
-  <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
-    <a href="/" class="font-extrabold text-xl tracking-tight">NEWS<span class="text-sky-400">.ULTRA</span></a>
+<header class="sticky top-0 z-50 glass">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
+    <a href="/" class="flex items-center gap-3 min-w-0">
+      <img src="/logo.jpg" alt="Hallaym News logo" class="w-9 h-9 rounded-2xl object-cover border border-white/10"/>
+      <div class="min-w-0">
+        <div class="font-extrabold text-base sm:text-lg leading-tight truncate">Hallaym News</div>
+        <div class="text-xs muted -mt-0.5 truncate">Tezkor xabarlar • Tahlillar • Dolzarb yangiliklar</div>
+      </div>
+    </a>
 
-    <div class="flex-1 max-w-xl">
+<div class="hidden lg:block flex-1 max-w-xl">
       <div class="flex items-center gap-2">
         <i class="bi bi-search text-slate-400"></i>
-        <input id="q"
-               class="w-full rounded-2xl bg-white/5 border border-white/10 px-4 py-2 text-sm outline-none"
-               placeholder="Search news..." />
-        <button id="goSearch" class="px-4 py-2 rounded-2xl btn text-sm">Search</button>
+        <input id="q" class="w-full rounded-2xl bg-white/5 border border-white/10 px-4 py-2 text-sm outline-none"
+               placeholder="Yangiliklardan qidiring..." />
+        <button id="goSearch" class="px-4 py-2 rounded-2xl btnp text-sm whitespace-nowrap">Qidirish</button>
       </div>
     </div>
 
-    <nav class="flex items-center gap-2 text-sm text-slate-300">
-      <a class="px-3 py-2 rounded-xl hover:bg-white/10" href="/articles.html"><i class="bi bi-grid-1x2"></i> Articles</a>
-      <a id="meBtn" class="px-3 py-2 rounded-xl hover:bg-white/10" href="/profile.html"><i class="bi bi-person"></i> Profile</a>
-      <a id="adminBtn" class="px-3 py-2 rounded-xl hover:bg-white/10 hidden" href="/admin.html"><i class="bi bi-shield-lock"></i> Admin</a>
-      <a id="editorBtn" class="px-3 py-2 rounded-xl hover:bg-white/10 hidden" href="/editor.html"><i class="bi bi-pencil-square"></i> Editor</a>
+    <div class="ml-auto flex items-center gap-2">
+      <button id="menuBtn" class="md:hidden px-3 py-2 rounded-xl btn" aria-label="Menu">
+        <i class="bi bi-list text-lg"></i>
+      </button>
+    </div>
+
+    <nav class="hidden md:flex items-center gap-2 text-sm text-slate-200">
+      <a class="px-3 py-2 rounded-xl hover:bg-white/10 bg-white/10 border border-white/10" href="/"><i class="bi bi-house"></i> Bosh sahifa</a>
+        <a class="px-3 py-2 rounded-xl hover:bg-white/10" href="/articles.html"><i class="bi bi-grid-1x2"></i> Yangiliklar</a>
+        <a class="px-3 py-2 rounded-xl hover:bg-white/10" href="/rss.xml"><i class="bi bi-rss"></i> RSS</a>
+        <a class="px-3 py-2 rounded-xl hover:bg-white/10" href="/sitemap.xml"><i class="bi bi-diagram-3"></i> Sitemap</a>
+      <a id="meBtn" class="px-3 py-2 rounded-xl hover:bg-white/10" href="/profile.html"><i class="bi bi-person"></i> Profil</a>
+        <a id="adminBtn" class="px-3 py-2 rounded-xl hover:bg-white/10 hidden" href="/admin.html"><i class="bi bi-shield-lock"></i> Admin</a>
+        <a id="editorBtn" class="px-3 py-2 rounded-xl hover:bg-white/10 hidden" href="/editor.html"><i class="bi bi-pencil-square"></i> Editor</a>
+        
     </nav>
   </div>
+
+  <div class="max-w-7xl mx-auto px-4 pb-3 md:hidden">
+    <div id="mobileMenu" class="hidden nav-drawer rounded-2xl p-3">
+      <div class="grid gap-2 text-sm text-slate-100">
+        <a class="px-3 py-2 rounded-xl hover:bg-white/10 bg-white/10 border border-white/10" href="/"><i class="bi bi-house"></i> Bosh sahifa</a>
+        <a class="px-3 py-2 rounded-xl hover:bg-white/10" href="/articles.html"><i class="bi bi-grid-1x2"></i> Yangiliklar</a>
+        <a class="px-3 py-2 rounded-xl hover:bg-white/10" href="/rss.xml"><i class="bi bi-rss"></i> RSS</a>
+        <a class="px-3 py-2 rounded-xl hover:bg-white/10" href="/sitemap.xml"><i class="bi bi-diagram-3"></i> Sitemap</a>
+        <a id="meBtn" class="px-3 py-2 rounded-xl hover:bg-white/10" href="/profile.html"><i class="bi bi-person"></i> Profil</a>
+        <a id="adminBtn" class="px-3 py-2 rounded-xl hover:bg-white/10 hidden" href="/admin.html"><i class="bi bi-shield-lock"></i> Admin</a>
+        <a id="editorBtn" class="px-3 py-2 rounded-xl hover:bg-white/10 hidden" href="/editor.html"><i class="bi bi-pencil-square"></i> Editor</a>
+        
+      </div>
+      <div class="mt-3">
+        <div class="flex items-center gap-2">
+          <i class="bi bi-search text-slate-400"></i>
+          <input id="q" class="w-full rounded-2xl bg-white/5 border border-white/10 px-4 py-2 text-sm outline-none"
+                 placeholder="Yangiliklardan qidiring..." />
+          <button id="goSearch" class="px-4 py-2 rounded-2xl btnp text-sm whitespace-nowrap">Qidirish</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </header>
+
+<script>
+  (function(){
+    const btn = document.getElementById("menuBtn");
+    const menu = document.getElementById("mobileMenu");
+    if(!btn || !menu) return;
+    btn.addEventListener("click", () => menu.classList.toggle("hidden"));
+  })();
+</script>
 
 <main class="max-w-7xl mx-auto px-4 py-8">
 
@@ -64,17 +145,17 @@
     <div class="relative flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
       <div class="max-w-2xl">
         <div class="inline-flex items-center gap-2 chip rounded-full px-3 py-1 text-xs text-slate-300">
-          <i class="bi bi-lightning-charge-fill text-sky-400"></i> Real-time feed • Guest likes/comments enabled
+          <i class="bi bi-lightning-charge-fill text-emerald-300"></i> Tezkor yangilanishlar • Qulay o‘qish
         </div>
         <h1 class="mt-4 text-3xl md:text-5xl font-black leading-tight">
-          Ultra dark, ultra fast news reading experience.
+          Tezkor, qulay va ishonchli yangiliklar manbai.
         </h1>
         <p class="mt-3 muted">
-          Latest, Top Viewed, Top Liked, Top Commented — all in one place. Each article has an SEO page for indexing.
+          Eng so‘nggi xabarlar, ko‘p o‘qilganlar, yoqqanlar va muhokama qilinganlar — hammasi bir joyda.
         </p>
 
         <div class="mt-6 flex flex-wrap gap-2">
-          <a class="px-5 py-3 rounded-2xl btnp text-sm" href="/articles.html"><i class="bi bi-grid-1x2"></i> Browse all</a>
+          <a class="px-5 py-3 rounded-2xl btnp text-sm" href="/articles.html"><i class="bi bi-grid-1x2"></i> Barchasini ko‘rish</a>
           <a class="px-5 py-3 rounded-2xl btn text-sm" href="/rss.xml"><i class="bi bi-rss"></i> RSS</a>
           <a class="px-5 py-3 rounded-2xl btn text-sm" href="/sitemap.xml"><i class="bi bi-diagram-3"></i> Sitemap</a>
         </div>
@@ -82,8 +163,8 @@
 
       <div class="w-full md:w-[420px] card2 rounded-3xl p-5">
         <div class="flex items-center justify-between">
-          <div class="font-extrabold">Trending now</div>
-          <div class="text-xs text-slate-400">Top viewed</div>
+          <div class="font-extrabold">Trend xabarlar</div>
+          <div class="text-xs text-slate-400">Ko‘p o‘qilgan</div>
         </div>
         <div id="trending" class="mt-4 space-y-3">
           <div class="text-sm muted">Loading...</div>
@@ -96,32 +177,32 @@
   <div class="mt-8 grid lg:grid-cols-2 gap-6">
     <section class="card rounded-3xl p-6">
       <div class="flex items-center justify-between gap-3">
-        <h2 class="text-xl font-extrabold">Latest</h2>
-        <a class="text-sm text-sky-300 hover:underline" href="/articles.html?sort=latest">See all</a>
+        <h2 class="text-xl font-extrabold">So‘nggi xabarlar</h2>
+        <a class="text-sm text-emerald-200 hover:underline" href="/articles.html?sort=latest">Barchasi</a>
       </div>
       <div id="latest" class="mt-4 grid md:grid-cols-2 gap-4"></div>
     </section>
 
     <section class="card rounded-3xl p-6">
       <div class="flex items-center justify-between gap-3">
-        <h2 class="text-xl font-extrabold">Top Liked</h2>
-        <a class="text-sm text-sky-300 hover:underline" href="/articles.html?sort=likes">See all</a>
+        <h2 class="text-xl font-extrabold">Ko‘p yoqqan</h2>
+        <a class="text-sm text-emerald-200 hover:underline" href="/articles.html?sort=likes">Barchasi</a>
       </div>
       <div id="topLiked" class="mt-4 grid md:grid-cols-2 gap-4"></div>
     </section>
 
     <section class="card rounded-3xl p-6">
       <div class="flex items-center justify-between gap-3">
-        <h2 class="text-xl font-extrabold">Top Viewed</h2>
-        <a class="text-sm text-sky-300 hover:underline" href="/articles.html?sort=views">See all</a>
+        <h2 class="text-xl font-extrabold">Ko‘p o‘qilgan</h2>
+        <a class="text-sm text-emerald-200 hover:underline" href="/articles.html?sort=views">Barchasi</a>
       </div>
       <div id="topViewed" class="mt-4 grid md:grid-cols-2 gap-4"></div>
     </section>
 
     <section class="card rounded-3xl p-6">
       <div class="flex items-center justify-between gap-3">
-        <h2 class="text-xl font-extrabold">Top Commented</h2>
-        <a class="text-sm text-sky-300 hover:underline" href="/articles.html?sort=comments">See all</a>
+        <h2 class="text-xl font-extrabold">Ko‘p muhokama</h2>
+        <a class="text-sm text-emerald-200 hover:underline" href="/articles.html?sort=comments">Barchasi</a>
       </div>
       <div id="topCommented" class="mt-4 grid md:grid-cols-2 gap-4"></div>
     </section>
@@ -130,16 +211,13 @@
 </main>
 
 <footer class="border-t border-white/10 py-10">
-  <div class="max-w-7xl mx-auto px-4 text-sm text-slate-400 flex flex-wrap items-center justify-between gap-3">
-    <div>© <span id="y"></span> NEWS.ULTRA</div>
-    <div class="flex items-center gap-4">
-      <a class="hover:underline" href="/about.html">About</a>
-      <a class="hover:underline" href="/contact.html">Contact</a>
-      <a class="hover:underline" href="/editorial-policy.html">Editorial</a>
-      <a class="hover:underline" href="/corrections.html">Corrections</a>
-      <a class="hover:underline" href="/privacy.html">Privacy</a>
-      <a class="hover:underline" href="/terms.html">Terms</a>
-      <a class="hover:underline" href="/sitemap.xml">Sitemap</a>
+  <div class="max-w-7xl mx-auto px-4 text-sm muted flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div>© <span id="y"></span> Hallaym News</div>
+    <div class="flex flex-wrap items-center gap-4">
+      <a class="hover:underline" href="/about.html">Biz haqimizda</a>
+      <a class="hover:underline" href="/contact.html">Aloqa</a>
+      <a class="hover:underline" href="/privacy.html">Maxfiylik</a>
+      <a class="hover:underline" href="/terms.html">Shartlar</a>
       <a class="hover:underline" href="/rss.xml">RSS</a>
     </div>
   </div>
@@ -161,7 +239,7 @@
   function articleCard(a){
     const cover = a.coverUrl ? `<img class="w-full h-36 object-cover rounded-2xl border border-white/10" src="${a.coverUrl}" alt="cover">` : "";
     const authorHtml = a.authorUsername
-      ? `<a class="text-sky-300 hover:underline" href="/profile.html?u=${encodeURIComponent(a.authorUsername)}">${esc(a.authorName || a.authorUsername)}</a>`
+      ? `<a class="text-emerald-200 hover:underline" href="/profile.html?u=${encodeURIComponent(a.authorUsername)}">${esc(a.authorName || a.authorUsername)}</a>`
       : `<span>${esc(a.authorName || "Author")}</span>`;
 
     return `
@@ -198,7 +276,7 @@
 
   function trendingRow(a){
     const author = a.authorUsername
-      ? `<a class="text-sky-300 hover:underline" href="/profile.html?u=${encodeURIComponent(a.authorUsername)}">${esc(a.authorName || a.authorUsername)}</a>`
+      ? `<a class="text-emerald-200 hover:underline" href="/profile.html?u=${encodeURIComponent(a.authorUsername)}">${esc(a.authorName || a.authorUsername)}</a>`
       : `<span>${esc(a.authorName || "Author")}</span>`;
     return `
       <a class="block rounded-2xl p-3 hover:bg-white/5 border border-white/10" href="/article.html?slug=${encodeURIComponent(a.slug)}">
